@@ -573,10 +573,12 @@ function App() {
                 <Home className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                  Find your perfect home financing solution
+                </h2>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Home Financing Questionnaire
                 </h1>
-                <p className="text-gray-600 mt-1">Find your perfect financing solution</p>
               </div>
             </div>
             <div className="text-right">
