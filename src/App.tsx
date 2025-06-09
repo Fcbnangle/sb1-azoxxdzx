@@ -197,7 +197,7 @@ function App() {
           <div className="space-y-4">
             {[
               { value: 'Primary residence', emoji: '🏠', desc: 'Your main home' },
-              { value: 'Investment property', emoji: '💰', desc: 'Rental income property' }
+              { value: 'Investment property', emoji: '💰', desc: 'Using estimated rent income as only income calculation to qualify' }
             ].map((option) => (
               <label key={option.value} className="flex items-center p-6 border-2 rounded-xl cursor-pointer hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 hover:border-orange-300 transition-all duration-300 transform hover:scale-105">
                 <input
@@ -658,7 +658,7 @@ function App() {
                       <span className="text-2xl">🏢</span>
                       <span className="font-semibold">Investment Property</span>
                     </div>
-                    <p className="text-blue-100">Using estimated rent income</p>
+                    <p className="text-blue-100">Using estimated rent income as only income calculation</p>
                   </div>
                 </div>
               </div>
