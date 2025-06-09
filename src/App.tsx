@@ -738,7 +738,7 @@ function App() {
               <p className="text-gray-300">
                 We specialize in loans <span className="text-green-400 font-bold">$500K+</span> with 
                 <span className="text-blue-400 font-bold"> FICO scores 660+</span> and 
-                <span className="text-purple-400 font-bold"> 10%+ down payment</span>
+                <span className="text-purple-400 font-bold"> 5%+ down payment</span>
               </p>
             </div>
           </div>
