@@ -599,24 +599,47 @@ function App() {
             </div>
           </div>
           
-          {/* Step indicators */}
-          <div className="flex justify-between mt-4">
-            {steps.map((step, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                  index <= currentStep 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' 
-                    : 'bg-gray-200 text-gray-500'
-                }`}>
-                  {index < currentStep ? '✓' : index + 1}
+          {/* Numbered Circle Indicators (1-11) */}
+          <div className="flex justify-center mt-6 mb-4">
+            <div className="flex gap-3 flex-wrap justify-center">
+              {Array.from({ length: 11 }, (_, index) => (
+                <div
+                  key={index}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-300 ${
+                    index <= currentStep 
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-110' 
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  {index + 1}
                 </div>
-                <div className={`text-xs mt-1 font-medium ${
-                  index <= currentStep ? 'text-blue-600' : 'text-gray-400'
-                }`}>
-                  {step.title}
+              ))}
+            </div>
+          </div>
+          
+          {/* Step indicators with spacing adjustments */}
+          <div className="flex justify-between mt-6">
+            {steps.map((step, index) => {
+              // Add extra spacing after Timeline (index 1) and Employment (index 7)
+              const shouldAddSpacing = index === 2 || index === 9; // After Timeline and Employment
+              
+              return (
+                <div key={index} className={`flex flex-col items-center ${shouldAddSpacing ? 'ml-8' : ''}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                    index <= currentStep 
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' 
+                      : 'bg-gray-200 text-gray-500'
+                  }`}>
+                    {index < currentStep ? '✓' : index + 1}
+                  </div>
+                  <div className={`text-xs mt-1 font-medium text-center max-w-20 ${
+                    index <= currentStep ? 'text-blue-600' : 'text-gray-400'
+                  }`}>
+                    {step.title}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
