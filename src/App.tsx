@@ -602,17 +602,17 @@ function App() {
           </div>
           
           {/* Step indicators */}
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-4 px-2">
             {steps.map((step, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+              <div key={index} className="flex flex-col items-center mx-1">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
                   index <= currentStep 
                     ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' 
                     : 'bg-gray-200 text-gray-500'
                 }`}>
                   {index < currentStep ? '✓' : index + 1}
                 </div>
-                <div className={`text-xs mt-1 font-medium ${
+                <div className={`text-xs mt-1 font-medium max-w-16 ${
                   index <= currentStep ? 'text-blue-600' : 'text-gray-400'
                 } ${
                   // Center text for steps 3, 4, 5, 7, 9, 10, 11 (indices 2, 3, 4, 6, 8, 9, 10)
