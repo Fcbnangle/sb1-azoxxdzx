@@ -573,29 +573,31 @@ function App() {
                 <Home className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                  Find your perfect home financing solution
+                <h2 className="text-4xl font-bold text-navy-900 mb-2" style={{ color: '#1e3a8a' }}>
+                  FIND YOUR PERFECT HOME FINANCING SOLUTION
                 </h2>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Home Financing Questionnaire
                 </h1>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-gray-600 mb-1">Progress</div>
-              <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          </div>
+          
+          {/* Enhanced Progress Bar with Step Counter */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-sm text-gray-600">Progress</div>
+              <div className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 {currentStep + 1} / {steps.length}
               </div>
             </div>
-          </div>
-          
-          {/* Enhanced Progress Bar */}
-          <div className="mt-6 bg-gray-200 rounded-full h-3 overflow-hidden">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-out relative"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            >
-              <div className="absolute inset-0 bg-white opacity-30 animate-pulse"></div>
+            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-out relative"
+                style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+              >
+                <div className="absolute inset-0 bg-white opacity-30 animate-pulse"></div>
+              </div>
             </div>
           </div>
           
