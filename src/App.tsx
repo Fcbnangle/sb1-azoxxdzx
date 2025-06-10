@@ -564,16 +564,27 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
-      {/* Header */}
-      <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
-        <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* Header with Beautiful Home & Family Banner */}
+      <div className="relative bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+          style={{
+            backgroundImage: `url('https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`
+          }}
+        ></div>
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/30 via-transparent to-purple-900/30"></div>
+        
+        <div className="relative max-w-6xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full">
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
                 <Home className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h2 className="text-4xl font-bold text-navy-900 mb-2" style={{ color: '#1e3a8a' }}>
+                <h2 className="text-4xl font-bold text-navy-900 mb-2 drop-shadow-lg" style={{ color: '#1e3a8a' }}>
                   FIND YOUR PERFECT HOME FINANCING SOLUTION
                 </h2>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
