@@ -565,22 +565,23 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
       {/* Header with Beautiful Family in Front of Home Banner */}
-      <div className="relative bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600 overflow-hidden">
-        {/* Background Image - Family in Front of Home Playing */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25"
-          style={{
-            backgroundImage: `url('https://images.pexels.com/photos/1128317/pexels-photo-1128317.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`,
-            backgroundPosition: 'center 30%'
-          }}
-        ></div>
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-purple-900/40"></div>
-        
-        <div className="relative max-w-6xl mx-auto px-4 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+      <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Main Header Section with Background Image */}
+          <div className="relative overflow-hidden rounded-2xl mb-6">
+            {/* Background Image - Family in Front of Home Playing */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25"
+              style={{
+                backgroundImage: `url('https://images.pexels.com/photos/1128317/pexels-photo-1128317.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`,
+                backgroundPosition: 'center 30%'
+              }}
+            ></div>
+            
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-purple-900/40"></div>
+            
+            <div className="relative flex items-center gap-4 p-8">
               <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
                 <Home className="w-8 h-8 text-white" />
               </div>
