@@ -564,13 +564,13 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
-      {/* Header with Beautiful Home & Family Banner */}
+      {/* Header with Beautiful Family in Backyard Banner */}
       <div className="relative bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600 overflow-hidden">
-        {/* Background Image */}
+        {/* Background Image - Family in Nice Backyard Playing */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
           style={{
-            backgroundImage: `url('https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`
+            backgroundImage: `url('https://images.pexels.com/photos/1128318/pexels-photo-1128318.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`
           }}
         ></div>
         
