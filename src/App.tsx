@@ -664,7 +664,7 @@ function App() {
                       <span className="text-2xl">🏦</span>
                       <span className="font-semibold">Bank Statement Loan</span>
                     </div>
-                    <p className="text-blue-100">12 month business bank statements</p>
+                    <p className="text-blue-100">12 month business bank statements used as income verification</p>
                   </div>
                   <div className="bg-white/10 backdrop-blur rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
@@ -675,7 +675,7 @@ function App() {
                   </div>
                   <div className="bg-white/10 backdrop-blur rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-2xl">🏢</span>
+                      <span className="text-2xl">💰</span>
                       <span className="font-semibold">Investment Property</span>
                     </div>
                     <p className="text-blue-100">Using estimated rent income as only income calculation</p>
