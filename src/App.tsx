@@ -681,6 +681,15 @@ function App() {
                     <p className="text-blue-100">Using estimated rent income as only income calculation</p>
                   </div>
                 </div>
+                <div className="mt-4">
+                  <div className="bg-white/10 backdrop-blur rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🏡</span>
+                      <span className="font-semibold">Reverse Mortgage</span>
+                    </div>
+                    <p className="text-blue-100">For homeowners 62+ to access home equity</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
