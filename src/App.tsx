@@ -750,6 +750,28 @@ function App() {
             >
               bruce.nangle@grarate.com
             </a>
+            
+            {/* Professional Information */}
+            <div className="mt-6 space-y-2">
+              <div className="text-xl font-bold text-white">Bruce Nangle</div>
+              <div className="text-lg text-gray-300">NMLS #267122</div>
+              <div className="text-lg text-gray-300">VP of loan origination at Guaranteed Rate Affinity</div>
+              <div className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                Operating in the state of New York as GR Affinity, LLC in lieu of the legal name Guaranteed Rate Affinity, LLC.
+              </div>
+              <div className="text-sm text-gray-400">
+                Guaranteed rate Affinity, LLC.: NMLS # 1598647; For licensing information visit{' '}
+                <a 
+                  href="https://nmlsconsumeraccess.org" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  nmlsconsumeraccess.org
+                </a>
+              </div>
+            </div>
+            
             <div className="mt-8 p-6 bg-white/10 backdrop-blur rounded-xl inline-block">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Star className="w-6 h-6 text-yellow-400" />
