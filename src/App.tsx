@@ -612,6 +612,9 @@ function App() {
                 </div>
                 <div className={`text-xs mt-1 font-medium ${
                   index <= currentStep ? 'text-blue-600' : 'text-gray-400'
+                } ${
+                  // Center text for steps 3, 4, 5, 7, 9, 10, 11 (indices 2, 3, 4, 6, 8, 9, 10)
+                  [2, 3, 4, 6, 8, 9, 10].includes(index) ? 'text-center' : ''
                 }`}>
                   {step.title}
                 </div>
