@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, FileText, Download, AlertTriangle, CheckSquare, ExternalLink } from 'lucide-react';
+import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, FileText, Download, ExternalLink, AlertTriangle, Camera, Image, FileImage, Megaphone, Calculator, Award, Wrench, ShoppingCart, Crown, Phone } from 'lucide-react';
 
 interface FormData {
   financingType: string;
@@ -19,6 +19,11 @@ interface FormData {
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [showLegalForms, setShowLegalForms] = useState(false);
+  const [showToolsServices, setShowToolsServices] = useState(false);
+  const [homeValue, setHomeValue] = useState('');
+  const [homeAddress, setHomeAddress] = useState('');
+  const [estimatedValue, setEstimatedValue] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
     financingType: '',
     timeline: '',
@@ -35,7 +40,6 @@ function App() {
     phone: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showLegalForms, setShowLegalForms] = useState(false);
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -58,6 +62,21 @@ function App() {
     // For now, we'll simulate the submission
     console.log('Form submitted:', formData);
     setIsSubmitted(true);
+  };
+
+  const calculateHomeValue = () => {
+    if (homeAddress) {
+      // Simulate home value calculation based on address
+      const baseValue = 500000;
+      const randomFactor = Math.random() * 0.4 + 0.8; // 0.8 to 1.2
+      const estimated = Math.round(baseValue * randomFactor);
+      setEstimatedValue(estimated);
+    }
+  };
+
+  const downloadTemplate = (templateName: string) => {
+    // In a real application, this would download the actual template
+    alert(`Downloading ${templateName}...`);
   };
 
   const steps = [
@@ -520,104 +539,320 @@ function App() {
     }
   ];
 
-  const stateResources = [
-    { state: 'California', url: 'https://www.dre.ca.gov/', forms: ['Purchase Agreement', 'Disclosure Forms', 'Transfer Disclosure Statement'] },
-    { state: 'New York', url: 'https://www.dos.ny.gov/licensing/re_salesperson/', forms: ['Property Condition Disclosure', 'Lead Paint Disclosure', 'Attorney Approval Addendum'] },
-    { state: 'Texas', url: 'https://www.trec.texas.gov/', forms: ['Earnest Money Contract', 'Seller\'s Disclosure Notice', 'Property Condition Addendum'] },
-    { state: 'Florida', url: 'https://www.myfloridalicense.com/DBPR/', forms: ['As-Is Contract', 'Property Disclosure', 'Homeowners Association Addendum'] },
-    { state: 'Illinois', url: 'https://www.idfpr.com/', forms: ['Residential Real Property Disclosure', 'Lead-Based Paint Disclosure', 'Radon Disclosure'] },
-    { state: 'Pennsylvania', url: 'https://www.dos.pa.gov/ProfessionalLicensing/', forms: ['Seller Property Disclosure Statement', 'Consumer Notice', 'Residential Purchase Agreement'] },
-    { state: 'Ohio', url: 'https://com.ohio.gov/real/', forms: ['Residential Property Disclosure Form', 'Lead-Based Paint Disclosure', 'Purchase Contract'] },
-    { state: 'Georgia', url: 'https://grec.state.ga.us/', forms: ['Seller\'s Property Disclosure Statement', 'Purchase and Sale Agreement', 'Brokerage Engagement Agreement'] },
-    { state: 'North Carolina', url: 'https://www.ncrec.gov/', forms: ['Residential Property Disclosure Statement', 'Offer to Purchase', 'Due Diligence Agreement'] },
-    { state: 'Michigan', url: 'https://www.michigan.gov/lara/', forms: ['Seller Disclosure Statement', 'Purchase Agreement', 'Lead Disclosure'] }
-  ];
+  // Tools & Services Section
+  if (showToolsServices) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+        {/* Header */}
+        <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
+          <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
+                  <Wrench className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold text-navy-900 mb-2" style={{ color: '#1e3a8a' }}>
+                    TOOLS & SERVICES
+                  </h1>
+                  <p className="text-xl text-gray-600">Professional real estate tools and marketing solutions</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowToolsServices(false)}
+                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105"
+              >
+                ← Back to Application
+              </button>
+            </div>
+          </div>
+        </div>
 
-  const contractTemplates = [
-    { name: 'Purchase Agreement Template', type: 'Contract', description: 'Standard residential purchase agreement with all essential terms' },
-    { name: 'Listing Agreement Template', type: 'Contract', description: 'Agreement between seller and real estate agent' },
-    { name: 'Lease Purchase Agreement', type: 'Contract', description: 'Rent-to-own agreement template' },
-    { name: 'Property Management Agreement', type: 'Contract', description: 'Agreement for property management services' },
-    { name: 'Disclosure Statement Template', type: 'Disclosure', description: 'Property condition and defect disclosure form' },
-    { name: 'Lead Paint Disclosure', type: 'Disclosure', description: 'Required federal lead-based paint disclosure' },
-    { name: 'HOA Disclosure', type: 'Disclosure', description: 'Homeowners association information disclosure' },
-    { name: 'Natural Hazard Disclosure', type: 'Disclosure', description: 'Environmental and natural disaster risk disclosure' }
-  ];
+        <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+          {/* Home Evaluation Estimator */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-green-400 to-emerald-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mb-4">
+                  <Calculator className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">🏠 Home Evaluation Estimator</h2>
+                <p className="text-gray-600">Get an instant estimate of your property's value</p>
+              </div>
 
-  const closingChecklist = [
-    { category: 'Pre-Closing (30 days)', items: [
-      'Order home inspection',
-      'Secure financing pre-approval',
-      'Order appraisal',
-      'Review title report',
-      'Obtain homeowners insurance',
-      'Schedule final walkthrough'
-    ]},
-    { category: 'Pre-Closing (7 days)', items: [
-      'Review closing disclosure',
-      'Confirm wire transfer details',
-      'Prepare certified funds',
-      'Review all contract addendums',
-      'Confirm utility transfers',
-      'Schedule moving services'
-    ]},
-    { category: 'Closing Day', items: [
-      'Bring government-issued ID',
-      'Bring certified funds for closing costs',
-      'Review all documents before signing',
-      'Confirm property condition',
-      'Receive keys and garage remotes',
-      'Get copies of all signed documents'
-    ]},
-    { category: 'Post-Closing', items: [
-      'Record deed with county',
-      'Set up utilities in your name',
-      'Update address with all institutions',
-      'File homestead exemption if applicable',
-      'Keep all closing documents safe',
-      'Schedule home warranty activation'
-    ]}
-  ];
+              <div className="max-w-2xl mx-auto space-y-6">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={homeAddress}
+                    onChange={(e) => setHomeAddress(e.target.value)}
+                    placeholder="Enter property address (e.g., 123 Main St, Los Angeles, CA)"
+                    className="w-full p-6 border-2 border-gray-300 rounded-xl text-lg focus:border-green-500 focus:outline-none transition-all duration-300 pl-14 bg-gradient-to-r from-green-50 to-emerald-50"
+                  />
+                  <Home className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-green-500" />
+                </div>
 
-  const commonPitfalls = [
-    {
-      category: 'Documentation Errors',
-      pitfall: 'Incomplete or missing disclosures',
-      consequence: 'Legal liability, deal cancellation, lawsuits',
-      prevention: 'Use state-specific disclosure checklists, review all forms with attorney'
-    },
-    {
-      category: 'Financial Issues',
-      pitfall: 'Not getting pre-approved for financing',
-      consequence: 'Deal falls through, wasted time and money',
-      prevention: 'Secure pre-approval letter before making offers'
-    },
-    {
-      category: 'Inspection Problems',
-      pitfall: 'Skipping professional home inspection',
-      consequence: 'Hidden defects, expensive repairs after closing',
-      prevention: 'Always hire qualified inspector, review report thoroughly'
-    },
-    {
-      category: 'Title Issues',
-      pitfall: 'Not reviewing title report carefully',
-      consequence: 'Ownership disputes, liens, legal complications',
-      prevention: 'Review title commitment, purchase title insurance'
-    },
-    {
-      category: 'Contract Terms',
-      pitfall: 'Unclear or missing contingencies',
-      consequence: 'Forced to complete unfavorable transaction',
-      prevention: 'Include inspection, financing, and appraisal contingencies'
-    },
-    {
-      category: 'Closing Preparation',
-      pitfall: 'Not reviewing closing disclosure in advance',
-      consequence: 'Surprises at closing, delayed settlement',
-      prevention: 'Review closing disclosure 3 days before closing'
-    }
-  ];
+                <button
+                  onClick={calculateHomeValue}
+                  disabled={!homeAddress}
+                  className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
+                    homeAddress
+                      ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transform hover:scale-105 shadow-lg'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  <Calculator className="w-5 h-5 inline mr-2" />
+                  Calculate Home Value
+                </button>
 
+                {estimatedValue && (
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6 text-center">
+                    <h3 className="text-2xl font-bold text-green-800 mb-2">Estimated Value</h3>
+                    <p className="text-4xl font-bold text-green-600">${estimatedValue.toLocaleString()}</p>
+                    <p className="text-sm text-green-700 mt-2">*This is an automated estimate. Contact us for a professional appraisal.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* FSBO Marketing Kits */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-purple-400 to-pink-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mb-4">
+                  <Megaphone className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">📢 FSBO Marketing Kits</h2>
+                <p className="text-gray-600">Complete marketing solutions for For Sale By Owner properties</p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* Photography Package */}
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
+                  <div className="text-center mb-4">
+                    <Camera className="w-12 h-12 text-purple-600 mx-auto mb-2" />
+                    <h3 className="text-xl font-bold text-gray-800">📸 Photography Package</h3>
+                  </div>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    <li>• Professional interior photos</li>
+                    <li>• Exterior and curb appeal shots</li>
+                    <li>• Drone aerial photography</li>
+                    <li>• Virtual staging options</li>
+                    <li>• High-resolution downloads</li>
+                  </ul>
+                  <button
+                    onClick={() => downloadTemplate('Photography Package')}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+                  >
+                    <Download className="w-4 h-4 inline mr-2" />
+                    Get Package Info
+                  </button>
+                </div>
+
+                {/* Signage & Print Materials */}
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
+                  <div className="text-center mb-4">
+                    <FileImage className="w-12 h-12 text-purple-600 mx-auto mb-2" />
+                    <h3 className="text-xl font-bold text-gray-800">🪧 Signs & Print Materials</h3>
+                  </div>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    <li>• Custom yard signs</li>
+                    <li>• Professional brochures</li>
+                    <li>• Property flyers</li>
+                    <li>• Open house signs</li>
+                    <li>• Business cards</li>
+                  </ul>
+                  <button
+                    onClick={() => downloadTemplate('Signage Package')}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+                  >
+                    <Download className="w-4 h-4 inline mr-2" />
+                    Download Templates
+                  </button>
+                </div>
+
+                {/* Digital Marketing */}
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
+                  <div className="text-center mb-4">
+                    <Image className="w-12 h-12 text-purple-600 mx-auto mb-2" />
+                    <h3 className="text-xl font-bold text-gray-800">💻 Digital Marketing Kit</h3>
+                  </div>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    <li>• Social media templates</li>
+                    <li>• Online listing descriptions</li>
+                    <li>• Email marketing templates</li>
+                    <li>• Website listing pages</li>
+                    <li>• Virtual tour setup</li>
+                  </ul>
+                  <button
+                    onClick={() => downloadTemplate('Digital Marketing Kit')}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+                  >
+                    <Download className="w-4 h-4 inline mr-2" />
+                    Get Digital Kit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Paid Upgrade Services */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-4">
+                  <Crown className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">👑 Premium Upgrade Services</h2>
+                <p className="text-gray-600">Professional services to maximize your property's exposure and success</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Flat Fee MLS Listing */}
+                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
+                  <div className="text-center mb-4">
+                    <Building className="w-12 h-12 text-yellow-600 mx-auto mb-2" />
+                    <h3 className="text-xl font-bold text-gray-800">🏢 Flat Fee MLS Listing</h3>
+                    <div className="text-2xl font-bold text-yellow-600 mt-2">$299</div>
+                  </div>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    <li>• Full MLS exposure</li>
+                    <li>• Syndication to major sites</li>
+                    <li>• Professional listing photos</li>
+                    <li>• 6-month listing period</li>
+                    <li>• Buyer agent cooperation</li>
+                  </ul>
+                  <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
+                    <ShoppingCart className="w-4 h-4 inline mr-2" />
+                    Purchase MLS Listing
+                  </button>
+                </div>
+
+                {/* Legal Consultation */}
+                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
+                  <div className="text-center mb-4">
+                    <FileText className="w-12 h-12 text-yellow-600 mx-auto mb-2" />
+                    <h3 className="text-xl font-bold text-gray-800">⚖️ Legal Consultation</h3>
+                    <div className="text-2xl font-bold text-yellow-600 mt-2">$150/hr</div>
+                  </div>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    <li>• Contract review</li>
+                    <li>• Disclosure compliance</li>
+                    <li>• Legal document prep</li>
+                    <li>• Risk assessment</li>
+                    <li>• Closing guidance</li>
+                  </ul>
+                  <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
+                    <Phone className="w-4 h-4 inline mr-2" />
+                    Schedule Consultation
+                  </button>
+                </div>
+
+                {/* Transaction Coordinator */}
+                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
+                  <div className="text-center mb-4">
+                    <User className="w-12 h-12 text-yellow-600 mx-auto mb-2" />
+                    <h3 className="text-xl font-bold text-gray-800">📋 Transaction Coordinator</h3>
+                    <div className="text-2xl font-bold text-yellow-600 mt-2">$495</div>
+                  </div>
+                  <ul className="space-y-2 text-gray-700 mb-6">
+                    <li>• Full transaction management</li>
+                    <li>• Timeline coordination</li>
+                    <li>• Document tracking</li>
+                    <li>• Deadline reminders</li>
+                    <li>• Closing coordination</li>
+                  </ul>
+                  <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
+                    <ShoppingCart className="w-4 h-4 inline mr-2" />
+                    Hire Coordinator
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Buyer Home Warranty Incentive */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full mb-4">
+                  <Award className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">🛡️ Buyer Home Warranty Incentive</h2>
+                <p className="text-gray-600">Protect your buyers and close more deals with comprehensive home warranties</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">🏠 What's Covered</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h4 className="font-semibold text-blue-800 mb-2">Systems</h4>
+                      <ul className="space-y-1 text-gray-700 text-sm">
+                        <li>• HVAC System</li>
+                        <li>• Electrical</li>
+                        <li>• Plumbing</li>
+                        <li>• Water Heater</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-blue-800 mb-2">Appliances</h4>
+                      <ul className="space-y-1 text-gray-700 text-sm">
+                        <li>• Refrigerator</li>
+                        <li>• Dishwasher</li>
+                        <li>• Range/Oven</li>
+                        <li>• Washer/Dryer</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">💰 Warranty Plans</h3>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-semibold text-gray-800">Basic Plan</span>
+                        <span className="text-2xl font-bold text-blue-600">$450/year</span>
+                      </div>
+                      <p className="text-sm text-gray-600">Major systems coverage</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-blue-200">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-semibold text-gray-800">Premium Plan</span>
+                        <span className="text-2xl font-bold text-blue-600">$650/year</span>
+                      </div>
+                      <p className="text-sm text-gray-600">Systems + appliances coverage</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 text-center">
+                <div className="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-200 rounded-xl p-6 inline-block">
+                  <h3 className="text-xl font-bold text-green-800 mb-2">🎁 Special Offer for Your Buyers</h3>
+                  <p className="text-green-700 mb-4">
+                    Offer a <span className="font-bold">FREE 1-Year Home Warranty</span> as a buyer incentive!
+                  </p>
+                  <button className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105">
+                    <Award className="w-5 h-5 inline mr-2" />
+                    Offer Warranty Incentive
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Legal Forms Section
   if (showLegalForms) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
@@ -633,155 +868,258 @@ function App() {
                   <h1 className="text-4xl font-bold text-navy-900 mb-2" style={{ color: '#1e3a8a' }}>
                     LEGAL FORMS & RESOURCES
                   </h1>
-                  <p className="text-xl text-gray-600">Essential documents and state-specific resources for real estate transactions</p>
+                  <p className="text-xl text-gray-600">Essential legal documents and state-specific resources</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowLegalForms(false)}
                 className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105"
               >
-                Back to Application
+                ← Back to Application
               </button>
             </div>
           </div>
         </div>
 
         <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-          {/* State Resources Section */}
+          {/* State-Specific Resources */}
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
-              <div className="flex items-center gap-3">
-                <ExternalLink className="w-8 h-8" />
-                <h2 className="text-2xl font-bold">State-Specific Resources</h2>
+            <div className="h-2 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full mb-4">
+                  <MapPin className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">🗺️ State-Specific Resources</h2>
+                <p className="text-gray-600">Official state resources and required forms by state</p>
               </div>
-              <p className="mt-2 text-blue-100">Official state resources and required forms by state</p>
-            </div>
-            <div className="p-6">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {stateResources.map((state, index) => (
-                  <div key={index} className="border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-bold text-gray-800">{state.state}</h3>
-                      <a
-                        href={state.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                      >
-                        <ExternalLink className="w-5 h-5" />
-                      </a>
-                    </div>
-                    <div className="space-y-2">
-                      {state.forms.map((form, formIndex) => (
-                        <div key={formIndex} className="flex items-center gap-2 text-sm text-gray-600">
-                          <Download className="w-4 h-4 text-green-600" />
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { state: 'California', forms: ['Purchase Agreement', 'Transfer Disclosure Statement', 'Natural Hazard Disclosure'], link: 'https://www.dre.ca.gov' },
+                  { state: 'Texas', forms: ['TREC Contract Forms', 'Seller Disclosure Notice', 'Lead Paint Disclosure'], link: 'https://www.trec.texas.gov' },
+                  { state: 'Florida', forms: ['Purchase Contract', 'Property Disclosure', 'Homeowners Association Disclosure'], link: 'https://www.myfloridalicense.com' },
+                  { state: 'New York', forms: ['Purchase Contract', 'Property Condition Disclosure', 'Attorney Approval Addendum'], link: 'https://www.dos.ny.gov' },
+                  { state: 'Illinois', forms: ['Purchase Agreement', 'Residential Real Property Disclosure', 'Lead Paint Disclosure'], link: 'https://www.idfpr.com' },
+                  { state: 'Pennsylvania', forms: ['Agreement of Sale', 'Seller Property Disclosure', 'Consumer Notice'], link: 'https://www.dos.pa.gov' },
+                  { state: 'Ohio', forms: ['Purchase Contract', 'Residential Property Disclosure', 'Lead Paint Disclosure'], link: 'https://www.com.ohio.gov' },
+                  { state: 'Georgia', forms: ['Purchase Agreement', 'Property Disclosure Statement', 'Brokerage Disclosure'], link: 'https://www.grec.state.ga.us' },
+                  { state: 'North Carolina', forms: ['Offer to Purchase', 'Residential Property Disclosure', 'Working with Real Estate Agents'], link: 'https://www.ncrec.gov' },
+                  { state: 'Michigan', forms: ['Purchase Agreement', 'Seller Disclosure Statement', 'Lead Paint Disclosure'], link: 'https://www.michigan.gov/lara' }
+                ].map((stateInfo) => (
+                  <div key={stateInfo.state} className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
+                    <h3 className="text-xl font-bold text-gray-800 mb-3">{stateInfo.state}</h3>
+                    <div className="space-y-2 mb-4">
+                      {stateInfo.forms.map((form, index) => (
+                        <div key={index} className="flex items-center text-sm text-gray-700">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
                           {form}
                         </div>
                       ))}
                     </div>
+                    <a
+                      href={stateInfo.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-300"
+                    >
+                      Visit Official Site
+                      <ExternalLink className="w-4 h-4 ml-1" />
+                    </a>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Contract Templates Section */}
+          {/* Contract Templates */}
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
-              <div className="flex items-center gap-3">
-                <FileText className="w-8 h-8" />
-                <h2 className="text-2xl font-bold">Contract Templates & Disclosure Forms</h2>
+            <div className="h-2 bg-gradient-to-r from-green-400 to-emerald-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mb-4">
+                  <FileText className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">📄 Contract Templates</h2>
+                <p className="text-gray-600">Professional contract templates for real estate transactions</p>
               </div>
-              <p className="mt-2 text-green-100">Professional templates for real estate transactions</p>
-            </div>
-            <div className="p-6">
-              <div className="grid md:grid-cols-2 gap-4">
-                {contractTemplates.map((template, index) => (
-                  <div key={index} className="border-2 border-gray-200 rounded-xl p-4 hover:border-green-300 hover:bg-green-50 transition-all duration-300">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            template.type === 'Contract' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'
-                          }`}>
-                            {template.type}
-                          </span>
-                        </div>
-                        <h3 className="text-lg font-bold text-gray-800 mb-2">{template.name}</h3>
-                        <p className="text-sm text-gray-600">{template.description}</p>
-                      </div>
-                      <button className="ml-4 p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
-                        <Download className="w-5 h-5" />
-                      </button>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { name: 'Purchase Agreement Template', desc: 'Standard residential purchase contract', icon: '🏠' },
+                  { name: 'Listing Agreement Template', desc: 'Seller representation agreement', icon: '📋' },
+                  { name: 'Lease Purchase Agreement', desc: 'Rent-to-own contract template', icon: '🔄' },
+                  { name: 'Property Management Agreement', desc: 'Landlord-tenant management contract', icon: '🏢' }
+                ].map((template) => (
+                  <div key={template.name} className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6">
+                    <div className="text-center mb-4">
+                      <span className="text-4xl mb-2 block">{template.icon}</span>
+                      <h3 className="text-lg font-bold text-gray-800">{template.name}</h3>
+                      <p className="text-sm text-gray-600 mt-2">{template.desc}</p>
                     </div>
+                    <button
+                      onClick={() => downloadTemplate(template.name)}
+                      className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300"
+                    >
+                      <Download className="w-4 h-4 inline mr-2" />
+                      Download
+                    </button>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Closing Checklist Section */}
+          {/* Disclosure Forms */}
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
-              <div className="flex items-center gap-3">
-                <CheckSquare className="w-8 h-8" />
-                <h2 className="text-2xl font-bold">Closing Checklist</h2>
+            <div className="h-2 bg-gradient-to-r from-purple-400 to-pink-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mb-4">
+                  <Shield className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">🛡️ Disclosure Forms</h2>
+                <p className="text-gray-600">Required disclosure documents for legal compliance</p>
               </div>
-              <p className="mt-2 text-purple-100">Step-by-step checklist to ensure smooth closing</p>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { name: 'Lead Paint Disclosure', desc: 'Required for homes built before 1978', icon: '⚠️' },
+                  { name: 'HOA Disclosure', desc: 'Homeowners association information', icon: '🏘️' },
+                  { name: 'Natural Hazard Disclosure', desc: 'Environmental risk disclosures', icon: '🌊' },
+                  { name: 'Property Condition Disclosure', desc: 'Known defects and conditions', icon: '🔍' }
+                ].map((form) => (
+                  <div key={form.name} className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
+                    <div className="text-center mb-4">
+                      <span className="text-4xl mb-2 block">{form.icon}</span>
+                      <h3 className="text-lg font-bold text-gray-800">{form.name}</h3>
+                      <p className="text-sm text-gray-600 mt-2">{form.desc}</p>
+                    </div>
+                    <button
+                      onClick={() => downloadTemplate(form.name)}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+                    >
+                      <Download className="w-4 h-4 inline mr-2" />
+                      Download
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="p-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                {closingChecklist.map((phase, index) => (
-                  <div key={index} className="border-2 border-gray-200 rounded-xl p-4">
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <span className="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">
-                        {index + 1}
-                      </span>
-                      {phase.category}
-                    </h3>
-                    <div className="space-y-2">
+          </div>
+
+          {/* Closing Checklist */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-4">
+                  <CheckCircle className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">✅ Closing Checklist</h2>
+                <p className="text-gray-600">Step-by-step checklist to ensure smooth closings</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    phase: 'Pre-Closing (30 days)',
+                    items: ['Order title search', 'Schedule home inspection', 'Apply for financing', 'Review purchase contract', 'Order appraisal']
+                  },
+                  {
+                    phase: 'Pre-Closing (7 days)',
+                    items: ['Final walkthrough', 'Review closing disclosure', 'Confirm insurance', 'Prepare closing funds', 'Schedule closing appointment']
+                  },
+                  {
+                    phase: 'Closing Day',
+                    items: ['Bring valid ID', 'Review all documents', 'Sign closing papers', 'Transfer funds', 'Receive keys']
+                  },
+                  {
+                    phase: 'Post-Closing',
+                    items: ['Record deed', 'Set up utilities', 'Update address', 'File documents', 'Celebrate! 🎉']
+                  }
+                ].map((phase, index) => (
+                  <div key={index} className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-gray-800 mb-4">{phase.phase}</h3>
+                    <ul className="space-y-2">
                       {phase.items.map((item, itemIndex) => (
-                        <div key={itemIndex} className="flex items-center gap-2 text-sm text-gray-600">
-                          <CheckSquare className="w-4 h-4 text-green-600" />
+                        <li key={itemIndex} className="flex items-start text-sm text-gray-700">
+                          <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2 mt-2 flex-shrink-0"></span>
                           {item}
-                        </div>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Common Pitfalls Section */}
+          {/* Common Pitfalls */}
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white p-6">
-              <div className="flex items-center gap-3">
-                <AlertTriangle className="w-8 h-8" />
-                <h2 className="text-2xl font-bold">Common Pitfalls & How to Avoid Them</h2>
+            <div className="h-2 bg-gradient-to-r from-red-400 to-pink-500"></div>
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-red-400 to-pink-500 rounded-full mb-4">
+                  <AlertTriangle className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">⚠️ Common Pitfalls & Prevention</h2>
+                <p className="text-gray-600">Learn from common mistakes and how to avoid them</p>
               </div>
-              <p className="mt-2 text-red-100">Critical mistakes that can derail your real estate transaction</p>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                {commonPitfalls.map((pitfall, index) => (
-                  <div key={index} className="border-2 border-gray-200 rounded-xl p-6 hover:border-red-300 hover:bg-red-50 transition-all duration-300">
-                    <div className="grid md:grid-cols-3 gap-4">
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    category: 'Documentation Errors',
+                    pitfall: 'Missing or incorrect paperwork',
+                    consequence: 'Delayed closings, legal issues',
+                    prevention: 'Use checklists, double-check all forms'
+                  },
+                  {
+                    category: 'Financial Issues',
+                    pitfall: 'Inadequate financing preparation',
+                    consequence: 'Loan denial, deal collapse',
+                    prevention: 'Pre-approval, financial planning'
+                  },
+                  {
+                    category: 'Inspection Problems',
+                    pitfall: 'Skipping or rushing inspections',
+                    consequence: 'Hidden defects, costly repairs',
+                    prevention: 'Thorough inspections, qualified inspectors'
+                  },
+                  {
+                    category: 'Title Issues',
+                    pitfall: 'Unclear property ownership',
+                    consequence: 'Legal disputes, ownership problems',
+                    prevention: 'Title search, title insurance'
+                  },
+                  {
+                    category: 'Contract Terms',
+                    pitfall: 'Vague or missing contract terms',
+                    consequence: 'Disputes, legal complications',
+                    prevention: 'Clear contracts, legal review'
+                  },
+                  {
+                    category: 'Closing Preparation',
+                    pitfall: 'Last-minute surprises',
+                    consequence: 'Delayed closings, additional costs',
+                    prevention: 'Early preparation, communication'
+                  }
+                ].map((pitfall, index) => (
+                  <div key={index} className="bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-red-800 mb-3">{pitfall.category}</h3>
+                    <div className="space-y-3">
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">
-                            {pitfall.category}
-                          </span>
-                        </div>
-                        <h3 className="font-bold text-gray-800">{pitfall.pitfall}</h3>
+                        <span className="text-sm font-semibold text-gray-700">Pitfall:</span>
+                        <p className="text-sm text-gray-600">{pitfall.pitfall}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-red-600 mb-1">Consequences:</h4>
-                        <p className="text-sm text-gray-600">{pitfall.consequence}</p>
+                        <span className="text-sm font-semibold text-red-700">Consequence:</span>
+                        <p className="text-sm text-red-600">{pitfall.consequence}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-green-600 mb-1">Prevention:</h4>
-                        <p className="text-sm text-gray-600">{pitfall.prevention}</p>
+                        <span className="text-sm font-semibold text-green-700">Prevention:</span>
+                        <p className="text-sm text-green-600">{pitfall.prevention}</p>
                       </div>
                     </div>
                   </div>
@@ -790,17 +1128,22 @@ function App() {
             </div>
           </div>
 
-          {/* Disclaimer Section */}
+          {/* Legal Disclaimer */}
           <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-3xl p-8">
             <div className="text-center">
               <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-4">Important Legal Disclaimer</h3>
-              <p className="text-gray-300 leading-relaxed max-w-4xl mx-auto">
-                The forms and information provided here are for educational purposes only and should not be considered legal advice. 
-                Real estate laws vary significantly by state and locality. Always consult with a qualified real estate attorney, 
-                licensed real estate professional, or your state's real estate commission before using any forms or making legal decisions. 
-                Bruce Nangle and Guaranteed Rate Affinity are not responsible for any legal consequences resulting from the use of these resources.
-              </p>
+              <h3 className="text-2xl font-bold mb-4">⚖️ Legal Disclaimer</h3>
+              <div className="max-w-4xl mx-auto text-gray-300 space-y-4">
+                <p>
+                  <strong>Important:</strong> The forms and information provided here are for educational purposes only and should not be considered legal advice.
+                </p>
+                <p>
+                  Real estate laws vary by state and locality. Always consult with a qualified real estate attorney, licensed real estate professional, or other qualified professional before using any forms or making legal decisions.
+                </p>
+                <p>
+                  We make no warranties about the accuracy, completeness, or suitability of these materials for your specific situation. Use of these resources is at your own risk.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -870,30 +1213,37 @@ function App() {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-purple-900/40"></div>
             
-            <div className="relative flex items-center justify-between p-8">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
-                  <Home className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-4xl font-bold text-navy-900 mb-2 drop-shadow-lg" style={{ color: '#1e3a8a' }}>
-                    FIND YOUR PERFECT HOME FINANCING SOLUTION
-                  </h2>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Home Financing Questionnaire
-                  </h1>
-                </div>
+            <div className="relative flex items-center gap-4 p-8">
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
+                <Home className="w-8 h-8 text-white" />
               </div>
-              
-              {/* Legal Forms Button */}
-              <button
-                onClick={() => setShowLegalForms(true)}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
-              >
-                <FileText className="w-5 h-5" />
-                Legal Forms
-              </button>
+              <div>
+                <h2 className="text-4xl font-bold text-navy-900 mb-2 drop-shadow-lg" style={{ color: '#1e3a8a' }}>
+                  FIND YOUR PERFECT HOME FINANCING SOLUTION
+                </h2>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  Home Financing Questionnaire
+                </h1>
+              </div>
             </div>
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-4 mb-6">
+            <button
+              onClick={() => setShowLegalForms(true)}
+              className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+            >
+              <FileText className="w-5 h-5" />
+              Legal Forms
+            </button>
+            <button
+              onClick={() => setShowToolsServices(true)}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+            >
+              <Wrench className="w-5 h-5" />
+              Tools & Services
+            </button>
           </div>
           
           {/* Enhanced Progress Bar with Step Counter */}
