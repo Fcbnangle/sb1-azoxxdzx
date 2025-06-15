@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, FileText, Download, ExternalLink, AlertTriangle, Camera, Image, FileImage, Megaphone, Calculator, Award, Wrench, ShoppingCart, Crown, Phone } from 'lucide-react';
+import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, Calculator, Camera, Download, FileText, Share2, Edit3, Printer, MessageSquare, Video, Image, Zap, Target, PenTool, Layout } from 'lucide-react';
 
 interface FormData {
   financingType: string;
@@ -19,11 +19,6 @@ interface FormData {
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [showLegalForms, setShowLegalForms] = useState(false);
-  const [showToolsServices, setShowToolsServices] = useState(false);
-  const [homeValue, setHomeValue] = useState('');
-  const [homeAddress, setHomeAddress] = useState('');
-  const [estimatedValue, setEstimatedValue] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
     financingType: '',
     timeline: '',
@@ -40,6 +35,31 @@ function App() {
     phone: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showToolsServices, setShowToolsServices] = useState(false);
+  const [showMarketingHub, setShowMarketingHub] = useState(false);
+  const [propertyAddress, setPropertyAddress] = useState('');
+  const [estimatedValue, setEstimatedValue] = useState<number | null>(null);
+  const [listingDetails, setListingDetails] = useState({
+    address: '',
+    bedrooms: '',
+    bathrooms: '',
+    sqft: '',
+    price: '',
+    features: '',
+    neighborhood: ''
+  });
+  const [generatedListing, setGeneratedListing] = useState('');
+  const [flyerData, setFlyerData] = useState({
+    address: '',
+    price: '',
+    bedrooms: '',
+    bathrooms: '',
+    sqft: '',
+    features: '',
+    agentName: '',
+    agentPhone: '',
+    agentEmail: ''
+  });
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -65,18 +85,39 @@ function App() {
   };
 
   const calculateHomeValue = () => {
-    if (homeAddress) {
-      // Simulate home value calculation based on address
-      const baseValue = 500000;
-      const randomFactor = Math.random() * 0.4 + 0.8; // 0.8 to 1.2
-      const estimated = Math.round(baseValue * randomFactor);
-      setEstimatedValue(estimated);
-    }
+    if (!propertyAddress) return;
+    
+    // Simulate home value calculation
+    const baseValue = Math.floor(Math.random() * 500000) + 300000;
+    const adjustedValue = baseValue + (Math.floor(Math.random() * 100000) - 50000);
+    setEstimatedValue(adjustedValue);
   };
 
-  const downloadTemplate = (templateName: string) => {
-    // In a real application, this would download the actual template
-    alert(`Downloading ${templateName}...`);
+  const generateListing = () => {
+    if (!listingDetails.address || !listingDetails.bedrooms || !listingDetails.bathrooms) return;
+    
+    // Simulate AI-generated listing description
+    const templates = [
+      `Welcome to this stunning ${listingDetails.bedrooms}-bedroom, ${listingDetails.bathrooms}-bathroom home located in the desirable ${listingDetails.neighborhood || 'neighborhood'}. This beautiful property offers ${listingDetails.sqft} square feet of comfortable living space, featuring ${listingDetails.features || 'modern amenities and thoughtful design'}. 
+
+Priced at $${listingDetails.price}, this home presents an exceptional opportunity for buyers seeking quality and value. The open floor plan creates a seamless flow between living spaces, perfect for both daily living and entertaining.
+
+Don't miss this opportunity to own a piece of paradise in one of the area's most sought-after locations. Schedule your showing today!`,
+      
+      `Discover your dream home at ${listingDetails.address}! This exceptional ${listingDetails.bedrooms}BR/${listingDetails.bathrooms}BA residence offers the perfect blend of comfort and style in ${listingDetails.sqft} square feet of beautifully designed living space.
+
+Key Features:
+• ${listingDetails.bedrooms} spacious bedrooms
+• ${listingDetails.bathrooms} well-appointed bathrooms  
+• ${listingDetails.sqft} sq ft of living space
+• ${listingDetails.features || 'Premium finishes throughout'}
+• Prime location in ${listingDetails.neighborhood || 'desirable area'}
+
+Listed at $${listingDetails.price}, this home won't last long in today's market. Contact us today to schedule your private showing!`
+    ];
+    
+    const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
+    setGeneratedListing(randomTemplate);
   };
 
   const steps = [
@@ -539,28 +580,25 @@ function App() {
     }
   ];
 
-  // Tools & Services Section
-  if (showToolsServices) {
+  if (showMarketingHub) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
-        {/* Header */}
-        <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-100">
+        {/* Marketing Hub Header */}
+        <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-purple-500 to-pink-600">
           <div className="max-w-6xl mx-auto px-4 py-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
-                  <Wrench className="w-8 h-8 text-white" />
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-lg">
+                  <Target className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-navy-900 mb-2" style={{ color: '#1e3a8a' }}>
-                    TOOLS & SERVICES
-                  </h1>
-                  <p className="text-xl text-gray-600">Professional real estate tools and marketing solutions</p>
+                  <h1 className="text-4xl font-bold text-gray-800 mb-2">Marketing Hub</h1>
+                  <p className="text-xl text-gray-600">Professional marketing tools for real estate success</p>
                 </div>
               </div>
               <button
-                onClick={() => setShowToolsServices(false)}
-                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105"
+                onClick={() => setShowMarketingHub(false)}
+                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
               >
                 ← Back to Application
               </button>
@@ -568,312 +606,407 @@ function App() {
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-          {/* Home Evaluation Estimator */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-green-400 to-emerald-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mb-4">
-                  <Calculator className="w-10 h-10 text-white" />
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {/* AI Listing Writer */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
+                <div className="flex items-center gap-3">
+                  <Zap className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">AI Listing Writer</h3>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">🏠 Home Evaluation Estimator</h2>
-                <p className="text-gray-600">Get an instant estimate of your property's value</p>
+                <p className="text-blue-100 mt-2">Generate compelling property descriptions with AI</p>
               </div>
-
-              <div className="max-w-2xl mx-auto space-y-6">
-                <div className="relative">
+              <div className="p-6 space-y-4">
+                <input
+                  type="text"
+                  placeholder="Property Address"
+                  value={listingDetails.address}
+                  onChange={(e) => setListingDetails({...listingDetails, address: e.target.value})}
+                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="number"
+                    placeholder="Bedrooms"
+                    value={listingDetails.bedrooms}
+                    onChange={(e) => setListingDetails({...listingDetails, bedrooms: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Bathrooms"
+                    value={listingDetails.bathrooms}
+                    onChange={(e) => setListingDetails({...listingDetails, bathrooms: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
                   <input
                     type="text"
-                    value={homeAddress}
-                    onChange={(e) => setHomeAddress(e.target.value)}
-                    placeholder="Enter property address (e.g., 123 Main St, Los Angeles, CA)"
-                    className="w-full p-6 border-2 border-gray-300 rounded-xl text-lg focus:border-green-500 focus:outline-none transition-all duration-300 pl-14 bg-gradient-to-r from-green-50 to-emerald-50"
+                    placeholder="Square Feet"
+                    value={listingDetails.sqft}
+                    onChange={(e) => setListingDetails({...listingDetails, sqft: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
-                  <Home className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-green-500" />
+                  <input
+                    type="text"
+                    placeholder="Price"
+                    value={listingDetails.price}
+                    onChange={(e) => setListingDetails({...listingDetails, price: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  />
                 </div>
-
+                <input
+                  type="text"
+                  placeholder="Key Features"
+                  value={listingDetails.features}
+                  onChange={(e) => setListingDetails({...listingDetails, features: e.target.value})}
+                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder="Neighborhood"
+                  value={listingDetails.neighborhood}
+                  onChange={(e) => setListingDetails({...listingDetails, neighborhood: e.target.value})}
+                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                />
                 <button
-                  onClick={calculateHomeValue}
-                  disabled={!homeAddress}
-                  className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
-                    homeAddress
-                      ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transform hover:scale-105 shadow-lg'
-                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  }`}
+                  onClick={generateListing}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300"
                 >
-                  <Calculator className="w-5 h-5 inline mr-2" />
-                  Calculate Home Value
+                  Generate Listing Description
                 </button>
-
-                {estimatedValue && (
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6 text-center">
-                    <h3 className="text-2xl font-bold text-green-800 mb-2">Estimated Value</h3>
-                    <p className="text-4xl font-bold text-green-600">${estimatedValue.toLocaleString()}</p>
-                    <p className="text-sm text-green-700 mt-2">*This is an automated estimate. Contact us for a professional appraisal.</p>
+                {generatedListing && (
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold mb-2">Generated Description:</h4>
+                    <p className="text-sm text-gray-700 whitespace-pre-line">{generatedListing}</p>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(generatedListing)}
+                      className="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >
+                      Copy to Clipboard
+                    </button>
                   </div>
                 )}
               </div>
             </div>
-          </div>
 
-          {/* FSBO Marketing Kits */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-purple-400 to-pink-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mb-4">
-                  <Megaphone className="w-10 h-10 text-white" />
+            {/* Photography & Video Guide */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6">
+                <div className="flex items-center gap-3">
+                  <Camera className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Photography & Video</h3>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">📢 FSBO Marketing Kits</h2>
-                <p className="text-gray-600">Complete marketing solutions for For Sale By Owner properties</p>
+                <p className="text-green-100 mt-2">Professional tips for stunning property photos</p>
               </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                {/* Photography Package */}
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
-                  <div className="text-center mb-4">
-                    <Camera className="w-12 h-12 text-purple-600 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold text-gray-800">📸 Photography Package</h3>
-                  </div>
-                  <ul className="space-y-2 text-gray-700 mb-6">
-                    <li>• Professional interior photos</li>
-                    <li>• Exterior and curb appeal shots</li>
-                    <li>• Drone aerial photography</li>
-                    <li>• Virtual staging options</li>
-                    <li>• High-resolution downloads</li>
-                  </ul>
-                  <button
-                    onClick={() => downloadTemplate('Photography Package')}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
-                  >
-                    <Download className="w-4 h-4 inline mr-2" />
-                    Get Package Info
-                  </button>
-                </div>
-
-                {/* Signage & Print Materials */}
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
-                  <div className="text-center mb-4">
-                    <FileImage className="w-12 h-12 text-purple-600 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold text-gray-800">🪧 Signs & Print Materials</h3>
-                  </div>
-                  <ul className="space-y-2 text-gray-700 mb-6">
-                    <li>• Custom yard signs</li>
-                    <li>• Professional brochures</li>
-                    <li>• Property flyers</li>
-                    <li>• Open house signs</li>
-                    <li>• Business cards</li>
-                  </ul>
-                  <button
-                    onClick={() => downloadTemplate('Signage Package')}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
-                  >
-                    <Download className="w-4 h-4 inline mr-2" />
-                    Download Templates
-                  </button>
-                </div>
-
-                {/* Digital Marketing */}
-                <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
-                  <div className="text-center mb-4">
-                    <Image className="w-12 h-12 text-purple-600 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold text-gray-800">💻 Digital Marketing Kit</h3>
-                  </div>
-                  <ul className="space-y-2 text-gray-700 mb-6">
-                    <li>• Social media templates</li>
-                    <li>• Online listing descriptions</li>
-                    <li>• Email marketing templates</li>
-                    <li>• Website listing pages</li>
-                    <li>• Virtual tour setup</li>
-                  </ul>
-                  <button
-                    onClick={() => downloadTemplate('Digital Marketing Kit')}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
-                  >
-                    <Download className="w-4 h-4 inline mr-2" />
-                    Get Digital Kit
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Paid Upgrade Services */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-4">
-                  <Crown className="w-10 h-10 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">👑 Premium Upgrade Services</h2>
-                <p className="text-gray-600">Professional services to maximize your property's exposure and success</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Flat Fee MLS Listing */}
-                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
-                  <div className="text-center mb-4">
-                    <Building className="w-12 h-12 text-yellow-600 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold text-gray-800">🏢 Flat Fee MLS Listing</h3>
-                    <div className="text-2xl font-bold text-yellow-600 mt-2">$299</div>
-                  </div>
-                  <ul className="space-y-2 text-gray-700 mb-6">
-                    <li>• Full MLS exposure</li>
-                    <li>• Syndication to major sites</li>
-                    <li>• Professional listing photos</li>
-                    <li>• 6-month listing period</li>
-                    <li>• Buyer agent cooperation</li>
-                  </ul>
-                  <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
-                    <ShoppingCart className="w-4 h-4 inline mr-2" />
-                    Purchase MLS Listing
-                  </button>
-                </div>
-
-                {/* Legal Consultation */}
-                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
-                  <div className="text-center mb-4">
-                    <FileText className="w-12 h-12 text-yellow-600 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold text-gray-800">⚖️ Legal Consultation</h3>
-                    <div className="text-2xl font-bold text-yellow-600 mt-2">$150/hr</div>
-                  </div>
-                  <ul className="space-y-2 text-gray-700 mb-6">
-                    <li>• Contract review</li>
-                    <li>• Disclosure compliance</li>
-                    <li>• Legal document prep</li>
-                    <li>• Risk assessment</li>
-                    <li>• Closing guidance</li>
-                  </ul>
-                  <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
-                    <Phone className="w-4 h-4 inline mr-2" />
-                    Schedule Consultation
-                  </button>
-                </div>
-
-                {/* Transaction Coordinator */}
-                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
-                  <div className="text-center mb-4">
-                    <User className="w-12 h-12 text-yellow-600 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold text-gray-800">📋 Transaction Coordinator</h3>
-                    <div className="text-2xl font-bold text-yellow-600 mt-2">$495</div>
-                  </div>
-                  <ul className="space-y-2 text-gray-700 mb-6">
-                    <li>• Full transaction management</li>
-                    <li>• Timeline coordination</li>
-                    <li>• Document tracking</li>
-                    <li>• Deadline reminders</li>
-                    <li>• Closing coordination</li>
-                  </ul>
-                  <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
-                    <ShoppingCart className="w-4 h-4 inline mr-2" />
-                    Hire Coordinator
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Buyer Home Warranty Incentive */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full mb-4">
-                  <Award className="w-10 h-10 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">🛡️ Buyer Home Warranty Incentive</h2>
-                <p className="text-gray-600">Protect your buyers and close more deals with comprehensive home warranties</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">🏠 What's Covered</h3>
-                  <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">📸</span>
                     <div>
-                      <h4 className="font-semibold text-blue-800 mb-2">Systems</h4>
-                      <ul className="space-y-1 text-gray-700 text-sm">
-                        <li>• HVAC System</li>
-                        <li>• Electrical</li>
-                        <li>• Plumbing</li>
-                        <li>• Water Heater</li>
-                      </ul>
+                      <h4 className="font-semibold">Interior Photography</h4>
+                      <p className="text-sm text-gray-600">Wide-angle shots, natural lighting, decluttered spaces</p>
                     </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🏡</span>
                     <div>
-                      <h4 className="font-semibold text-blue-800 mb-2">Appliances</h4>
-                      <ul className="space-y-1 text-gray-700 text-sm">
-                        <li>• Refrigerator</li>
-                        <li>• Dishwasher</li>
-                        <li>• Range/Oven</li>
-                        <li>• Washer/Dryer</li>
-                      </ul>
+                      <h4 className="font-semibold">Exterior Shots</h4>
+                      <p className="text-sm text-gray-600">Golden hour lighting, curb appeal, landscaping</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🚁</span>
+                    <div>
+                      <h4 className="font-semibold">Drone Photography</h4>
+                      <p className="text-sm text-gray-600">Aerial views, neighborhood context, property boundaries</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🎥</span>
+                    <div>
+                      <h4 className="font-semibold">Video Tours</h4>
+                      <p className="text-sm text-gray-600">Smooth transitions, highlight key features, 2-3 minutes</p>
                     </div>
                   </div>
                 </div>
-
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">💰 Warranty Plans</h3>
-                  <div className="space-y-4">
-                    <div className="bg-white rounded-lg p-4 border border-blue-200">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold text-gray-800">Basic Plan</span>
-                        <span className="text-2xl font-bold text-blue-600">$450/year</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Major systems coverage</p>
-                    </div>
-                    <div className="bg-white rounded-lg p-4 border border-blue-200">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-semibold text-gray-800">Premium Plan</span>
-                        <span className="text-2xl font-bold text-blue-600">$650/year</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Systems + appliances coverage</p>
-                    </div>
-                  </div>
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-green-800 mb-2">Pro Tips:</h4>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Shoot during golden hour (1 hour before sunset)</li>
+                    <li>• Use a tripod for stability</li>
+                    <li>• Turn on all lights for interior shots</li>
+                    <li>• Remove personal items and clutter</li>
+                    <li>• Take 20-30 photos minimum</li>
+                  </ul>
                 </div>
               </div>
+            </div>
 
-              <div className="mt-8 text-center">
-                <div className="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-200 rounded-xl p-6 inline-block">
-                  <h3 className="text-xl font-bold text-green-800 mb-2">🎁 Special Offer for Your Buyers</h3>
-                  <p className="text-green-700 mb-4">
-                    Offer a <span className="font-bold">FREE 1-Year Home Warranty</span> as a buyer incentive!
-                  </p>
-                  <button className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105">
-                    <Award className="w-5 h-5 inline mr-2" />
-                    Offer Warranty Incentive
+            {/* Sample Listing Descriptions */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-orange-500 to-red-600 p-6">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Sample Descriptions</h3>
+                </div>
+                <p className="text-orange-100 mt-2">Proven listing templates that sell</p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Luxury Home Template</h4>
+                    <p className="text-sm text-gray-700">
+                      "Discover unparalleled elegance in this stunning [X]BR/[X]BA masterpiece. Featuring [key features], this exceptional property offers [unique selling points]..."
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Family Home Template</h4>
+                    <p className="text-sm text-gray-700">
+                      "Welcome home to this charming [X]BR/[X]BA family residence. Perfect for [target audience], featuring [family-friendly features]..."
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">Investment Property Template</h4>
+                    <p className="text-sm text-gray-700">
+                      "Exceptional investment opportunity! This well-maintained [property type] offers [rental potential] with [investment highlights]..."
+                    </p>
+                  </div>
+                </div>
+                <button className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-300">
+                  Download All Templates
+                </button>
+              </div>
+            </div>
+
+            {/* Social Media Strategies */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
+                <div className="flex items-center gap-3">
+                  <Share2 className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Social Media Strategy</h3>
+                </div>
+                <p className="text-pink-100 mt-2">Maximize your property's online exposure</p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">📱</span>
+                    <div>
+                      <h4 className="font-semibold">Instagram Strategy</h4>
+                      <p className="text-sm text-gray-600">Stories, Reels, carousel posts with property highlights</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">👥</span>
+                    <div>
+                      <h4 className="font-semibold">Facebook Marketing</h4>
+                      <p className="text-sm text-gray-600">Targeted ads, local groups, virtual open houses</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">💼</span>
+                    <div>
+                      <h4 className="font-semibold">LinkedIn Networking</h4>
+                      <p className="text-sm text-gray-600">Professional network, investor connections</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl">🎬</span>
+                    <div>
+                      <h4 className="font-semibold">TikTok & YouTube</h4>
+                      <p className="text-sm text-gray-600">Property tours, neighborhood guides, tips</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-pink-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-pink-800 mb-2">Content Calendar:</h4>
+                  <ul className="text-sm text-pink-700 space-y-1">
+                    <li>• Monday: Property highlights</li>
+                    <li>• Wednesday: Neighborhood features</li>
+                    <li>• Friday: Market updates</li>
+                    <li>• Weekend: Open house promotion</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Printable Flyer Builder */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-500 to-blue-600 p-6">
+                <div className="flex items-center gap-3">
+                  <Layout className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Flyer Builder</h3>
+                </div>
+                <p className="text-indigo-100 mt-2">Create professional property flyers instantly</p>
+              </div>
+              <div className="p-6 space-y-4">
+                <input
+                  type="text"
+                  placeholder="Property Address"
+                  value={flyerData.address}
+                  onChange={(e) => setFlyerData({...flyerData, address: e.target.value})}
+                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="Price"
+                    value={flyerData.price}
+                    onChange={(e) => setFlyerData({...flyerData, price: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Bedrooms"
+                    value={flyerData.bedrooms}
+                    onChange={(e) => setFlyerData({...flyerData, bedrooms: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="Bathrooms"
+                    value={flyerData.bathrooms}
+                    onChange={(e) => setFlyerData({...flyerData, bathrooms: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Square Feet"
+                    value={flyerData.sqft}
+                    onChange={(e) => setFlyerData({...flyerData, sqft: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Key Features"
+                  value={flyerData.features}
+                  onChange={(e) => setFlyerData({...flyerData, features: e.target.value})}
+                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                />
+                <div className="space-y-2">
+                  <h4 className="font-semibold">Agent Information</h4>
+                  <input
+                    type="text"
+                    placeholder="Agent Name"
+                    value={flyerData.agentName}
+                    onChange={(e) => setFlyerData({...flyerData, agentName: e.target.value})}
+                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="tel"
+                      placeholder="Phone"
+                      value={flyerData.agentPhone}
+                      onChange={(e) => setFlyerData({...flyerData, agentPhone: e.target.value})}
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={flyerData.agentEmail}
+                      onChange={(e) => setFlyerData({...flyerData, agentEmail: e.target.value})}
+                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <button className="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-indigo-700 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    Preview
+                  </button>
+                  <button className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-2">
+                    <Download className="w-4 h-4" />
+                    Download PDF
                   </button>
                 </div>
               </div>
             </div>
+
+            {/* Marketing Templates */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-teal-500 to-cyan-600 p-6">
+                <div className="flex items-center gap-3">
+                  <PenTool className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Marketing Templates</h3>
+                </div>
+                <p className="text-teal-100 mt-2">Ready-to-use marketing materials</p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">📧</span>
+                      <span className="font-medium">Email Templates</span>
+                    </div>
+                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">📱</span>
+                      <span className="font-medium">Social Media Posts</span>
+                    </div>
+                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">📄</span>
+                      <span className="font-medium">Brochure Templates</span>
+                    </div>
+                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">🪧</span>
+                      <span className="font-medium">Yard Sign Designs</span>
+                    </div>
+                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">💌</span>
+                      <span className="font-medium">Direct Mail Postcards</span>
+                    </div>
+                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
+                  </div>
+                </div>
+                <button className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white py-3 rounded-lg font-semibold hover:from-teal-700 hover:to-cyan-700 transition-all duration-300">
+                  Download All Templates
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     );
   }
 
-  // Legal Forms Section
-  if (showLegalForms) {
+  if (showToolsServices) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
-        {/* Header */}
+        {/* Tools & Services Header */}
         <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
           <div className="max-w-6xl mx-auto px-4 py-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
-                  <FileText className="w-8 h-8 text-white" />
+                  <Calculator className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold text-navy-900 mb-2" style={{ color: '#1e3a8a' }}>
-                    LEGAL FORMS & RESOURCES
-                  </h1>
-                  <p className="text-xl text-gray-600">Essential legal documents and state-specific resources</p>
+                  <h1 className="text-4xl font-bold text-gray-800 mb-2">Tools & Services</h1>
+                  <p className="text-xl text-gray-600">Professional real estate tools and premium services</p>
                 </div>
               </div>
               <button
-                onClick={() => setShowLegalForms(false)}
-                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105"
+                onClick={() => setShowToolsServices(false)}
+                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
               >
                 ← Back to Application
               </button>
@@ -881,271 +1014,285 @@ function App() {
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-          {/* State-Specific Resources */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full mb-4">
-                  <MapPin className="w-10 h-10 text-white" />
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="grid lg:grid-cols-2 gap-8">
+            
+            {/* Home Evaluation Estimator */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6">
+                <div className="flex items-center gap-3">
+                  <Calculator className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Home Evaluation Estimator</h3>
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">🗺️ State-Specific Resources</h2>
-                <p className="text-gray-600">Official state resources and required forms by state</p>
+                <p className="text-green-100 mt-2">Get an instant estimate of your property's value</p>
               </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  { state: 'California', forms: ['Purchase Agreement', 'Transfer Disclosure Statement', 'Natural Hazard Disclosure'], link: 'https://www.dre.ca.gov' },
-                  { state: 'Texas', forms: ['TREC Contract Forms', 'Seller Disclosure Notice', 'Lead Paint Disclosure'], link: 'https://www.trec.texas.gov' },
-                  { state: 'Florida', forms: ['Purchase Contract', 'Property Disclosure', 'Homeowners Association Disclosure'], link: 'https://www.myfloridalicense.com' },
-                  { state: 'New York', forms: ['Purchase Contract', 'Property Condition Disclosure', 'Attorney Approval Addendum'], link: 'https://www.dos.ny.gov' },
-                  { state: 'Illinois', forms: ['Purchase Agreement', 'Residential Real Property Disclosure', 'Lead Paint Disclosure'], link: 'https://www.idfpr.com' },
-                  { state: 'Pennsylvania', forms: ['Agreement of Sale', 'Seller Property Disclosure', 'Consumer Notice'], link: 'https://www.dos.pa.gov' },
-                  { state: 'Ohio', forms: ['Purchase Contract', 'Residential Property Disclosure', 'Lead Paint Disclosure'], link: 'https://www.com.ohio.gov' },
-                  { state: 'Georgia', forms: ['Purchase Agreement', 'Property Disclosure Statement', 'Brokerage Disclosure'], link: 'https://www.grec.state.ga.us' },
-                  { state: 'North Carolina', forms: ['Offer to Purchase', 'Residential Property Disclosure', 'Working with Real Estate Agents'], link: 'https://www.ncrec.gov' },
-                  { state: 'Michigan', forms: ['Purchase Agreement', 'Seller Disclosure Statement', 'Lead Paint Disclosure'], link: 'https://www.michigan.gov/lara' }
-                ].map((stateInfo) => (
-                  <div key={stateInfo.state} className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-3">{stateInfo.state}</h3>
-                    <div className="space-y-2 mb-4">
-                      {stateInfo.forms.map((form, index) => (
-                        <div key={index} className="flex items-center text-sm text-gray-700">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                          {form}
+              <div className="p-6">
+                <div className="space-y-4">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={propertyAddress}
+                      onChange={(e) => setPropertyAddress(e.target.value)}
+                      placeholder="Enter property address (e.g., 123 Main St, Los Angeles, CA)"
+                      className="w-full p-4 border-2 border-gray-300 rounded-xl text-lg focus:border-green-500 focus:outline-none transition-all duration-300 pl-12"
+                    />
+                    <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+                  </div>
+                  <button
+                    onClick={calculateHomeValue}
+                    disabled={!propertyAddress}
+                    className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
+                      propertyAddress
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transform hover:scale-105'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Get Instant Valuation
+                  </button>
+                  
+                  {estimatedValue && (
+                    <div className="mt-6 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
+                      <div className="text-center">
+                        <h4 className="text-lg font-semibold text-green-800 mb-2">Estimated Property Value</h4>
+                        <div className="text-4xl font-bold text-green-600 mb-2">
+                          ${estimatedValue.toLocaleString()}
                         </div>
-                      ))}
+                        <p className="text-sm text-green-700 mb-4">
+                          Based on recent comparable sales and market data
+                        </p>
+                        <div className="bg-white p-4 rounded-lg">
+                          <p className="text-xs text-gray-600">
+                            <strong>Disclaimer:</strong> This is an automated estimate and should not be considered an appraisal. 
+                            Actual property value may vary. For a professional appraisal, please contact a licensed appraiser.
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <a
-                      href={stateInfo.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-300"
-                    >
-                      Visit Official Site
-                      <ExternalLink className="w-4 h-4 ml-1" />
-                    </a>
-                  </div>
-                ))}
+                  )}
+                </div>
               </div>
             </div>
+
+            {/* FSBO Marketing Kits */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-6">
+                <div className="flex items-center gap-3">
+                  <Camera className="w-8 h-8 text-white" />
+                  <h3 className="text-2xl font-bold text-white">FSBO Marketing Kits</h3>
+                </div>
+                <p className="text-purple-100 mt-2">Complete marketing packages for selling your home</p>
+              </div>
+              <div className="p-6 space-y-6">
+                
+                {/* Photography Package */}
+                <div className="border-2 border-purple-200 rounded-xl p-4 hover:border-purple-400 transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-3xl">📸</span>
+                    <h4 className="text-xl font-bold text-gray-800">Photography Package</h4>
+                  </div>
+                  <ul className="text-gray-600 space-y-1 mb-4">
+                    <li>• Professional interior/exterior photos (20-30 shots)</li>
+                    <li>• Drone aerial photography</li>
+                    <li>• Virtual staging options</li>
+                    <li>• High-resolution downloads</li>
+                  </ul>
+                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
+                    <Download className="w-4 h-4 inline mr-2" />
+                    Download Templates
+                  </button>
+                </div>
+
+                {/* Signs & Print Materials */}
+                <div className="border-2 border-purple-200 rounded-xl p-4 hover:border-purple-400 transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-3xl">🪧</span>
+                    <h4 className="text-xl font-bold text-gray-800">Signs & Print Materials</h4>
+                  </div>
+                  <ul className="text-gray-600 space-y-1 mb-4">
+                    <li>• Custom yard signs design</li>
+                    <li>• Professional brochures template</li>
+                    <li>• Property flyers layout</li>
+                    <li>• Open house signs</li>
+                  </ul>
+                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
+                    <Download className="w-4 h-4 inline mr-2" />
+                    Download Templates
+                  </button>
+                </div>
+
+                {/* Digital Marketing Kit */}
+                <div className="border-2 border-purple-200 rounded-xl p-4 hover:border-purple-400 transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-3xl">💻</span>
+                    <h4 className="text-xl font-bold text-gray-800">Digital Marketing Kit</h4>
+                  </div>
+                  <ul className="text-gray-600 space-y-1 mb-4">
+                    <li>• Social media templates</li>
+                    <li>• Online listing descriptions</li>
+                    <li>• Email marketing templates</li>
+                    <li>• Virtual tour setup guide</li>
+                  </ul>
+                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
+                    <Download className="w-4 h-4 inline mr-2" />
+                    Download Templates
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
           </div>
 
-          {/* Contract Templates */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-green-400 to-emerald-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mb-4">
-                  <FileText className="w-10 h-10 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">📄 Contract Templates</h2>
-                <p className="text-gray-600">Professional contract templates for real estate transactions</p>
+          {/* Premium Upgrade Services */}
+          <div className="mt-8 bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-gradient-to-r from-gold-500 to-yellow-600 p-6" style={{background: 'linear-gradient(to right, #f59e0b, #d97706)'}}>
+              <div className="flex items-center gap-3">
+                <Star className="w-8 h-8 text-white" />
+                <h3 className="text-2xl font-bold text-white">Premium Upgrade Services</h3>
               </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  { name: 'Purchase Agreement Template', desc: 'Standard residential purchase contract', icon: '🏠' },
-                  { name: 'Listing Agreement Template', desc: 'Seller representation agreement', icon: '📋' },
-                  { name: 'Lease Purchase Agreement', desc: 'Rent-to-own contract template', icon: '🔄' },
-                  { name: 'Property Management Agreement', desc: 'Landlord-tenant management contract', icon: '🏢' }
-                ].map((template) => (
-                  <div key={template.name} className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6">
-                    <div className="text-center mb-4">
-                      <span className="text-4xl mb-2 block">{template.icon}</span>
-                      <h3 className="text-lg font-bold text-gray-800">{template.name}</h3>
-                      <p className="text-sm text-gray-600 mt-2">{template.desc}</p>
+              <p className="text-yellow-100 mt-2">Professional services to maximize your success</p>
+            </div>
+            <div className="p-6">
+              <div className="grid md:grid-cols-3 gap-6">
+                
+                {/* Flat Fee MLS Listing */}
+                <div className="border-2 border-yellow-200 rounded-xl p-6 hover:border-yellow-400 transition-all duration-300 transform hover:scale-105">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Home className="w-8 h-8 text-white" />
                     </div>
-                    <button
-                      onClick={() => downloadTemplate(template.name)}
-                      className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300"
-                    >
-                      <Download className="w-4 h-4 inline mr-2" />
-                      Download
+                    <h4 className="text-xl font-bold text-gray-800 mb-2">Flat Fee MLS Listing</h4>
+                    <div className="text-3xl font-bold text-yellow-600 mb-4">$299</div>
+                    <ul className="text-gray-600 space-y-2 mb-6">
+                      <li>• Full MLS exposure</li>
+                      <li>• Syndication to major sites</li>
+                      <li>• Professional listing photos</li>
+                      <li>• 6-month listing period</li>
+                      <li>• Buyer agent cooperation</li>
+                    </ul>
+                    <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
+                      Purchase Service
                     </button>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Disclosure Forms */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-purple-400 to-pink-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full mb-4">
-                  <Shield className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">🛡️ Disclosure Forms</h2>
-                <p className="text-gray-600">Required disclosure documents for legal compliance</p>
-              </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  { name: 'Lead Paint Disclosure', desc: 'Required for homes built before 1978', icon: '⚠️' },
-                  { name: 'HOA Disclosure', desc: 'Homeowners association information', icon: '🏘️' },
-                  { name: 'Natural Hazard Disclosure', desc: 'Environmental risk disclosures', icon: '🌊' },
-                  { name: 'Property Condition Disclosure', desc: 'Known defects and conditions', icon: '🔍' }
-                ].map((form) => (
-                  <div key={form.name} className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6">
-                    <div className="text-center mb-4">
-                      <span className="text-4xl mb-2 block">{form.icon}</span>
-                      <h3 className="text-lg font-bold text-gray-800">{form.name}</h3>
-                      <p className="text-sm text-gray-600 mt-2">{form.desc}</p>
+                {/* Legal Consultation */}
+                <div className="border-2 border-yellow-200 rounded-xl p-6 hover:border-yellow-400 transition-all duration-300 transform hover:scale-105">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Shield className="w-8 h-8 text-white" />
                     </div>
-                    <button
-                      onClick={() => downloadTemplate(form.name)}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
-                    >
-                      <Download className="w-4 h-4 inline mr-2" />
-                      Download
+                    <h4 className="text-xl font-bold text-gray-800 mb-2">Legal Consultation</h4>
+                    <div className="text-3xl font-bold text-blue-600 mb-4">$150<span className="text-lg">/hr</span></div>
+                    <ul className="text-gray-600 space-y-2 mb-6">
+                      <li>• Contract review</li>
+                      <li>• Disclosure compliance</li>
+                      <li>• Legal document preparation</li>
+                      <li>• Risk assessment</li>
+                      <li>• Closing guidance</li>
+                    </ul>
+                    <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300">
+                      Schedule Consultation
                     </button>
                   </div>
-                ))}
+                </div>
+
+                {/* Transaction Coordinator */}
+                <div className="border-2 border-yellow-200 rounded-xl p-6 hover:border-yellow-400 transition-all duration-300 transform hover:scale-105">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-800 mb-2">Transaction Coordinator</h4>
+                    <div className="text-3xl font-bold text-green-600 mb-4">$495</div>
+                    <ul className="text-gray-600 space-y-2 mb-6">
+                      <li>• Full transaction management</li>
+                      <li>• Timeline coordination</li>
+                      <li>• Document tracking</li>
+                      <li>• Deadline reminders</li>
+                      <li>• Closing coordination</li>
+                    </ul>
+                    <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300">
+                      Hire Coordinator
+                    </button>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
 
-          {/* Closing Checklist */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-yellow-400 to-orange-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full mb-4">
-                  <CheckCircle className="w-10 h-10 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">✅ Closing Checklist</h2>
-                <p className="text-gray-600">Step-by-step checklist to ensure smooth closings</p>
+          {/* Buyer Home Warranty Incentive */}
+          <div className="mt-8 bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-gradient-to-r from-red-500 to-pink-600 p-6">
+              <div className="flex items-center gap-3">
+                <Shield className="w-8 h-8 text-white" />
+                <h3 className="text-2xl font-bold text-white">Buyer Home Warranty Incentive</h3>
               </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  {
-                    phase: 'Pre-Closing (30 days)',
-                    items: ['Order title search', 'Schedule home inspection', 'Apply for financing', 'Review purchase contract', 'Order appraisal']
-                  },
-                  {
-                    phase: 'Pre-Closing (7 days)',
-                    items: ['Final walkthrough', 'Review closing disclosure', 'Confirm insurance', 'Prepare closing funds', 'Schedule closing appointment']
-                  },
-                  {
-                    phase: 'Closing Day',
-                    items: ['Bring valid ID', 'Review all documents', 'Sign closing papers', 'Transfer funds', 'Receive keys']
-                  },
-                  {
-                    phase: 'Post-Closing',
-                    items: ['Record deed', 'Set up utilities', 'Update address', 'File documents', 'Celebrate! 🎉']
-                  }
-                ].map((phase, index) => (
-                  <div key={index} className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-4">{phase.phase}</h3>
-                    <ul className="space-y-2">
-                      {phase.items.map((item, itemIndex) => (
-                        <li key={itemIndex} className="flex items-start text-sm text-gray-700">
-                          <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2 mt-2 flex-shrink-0"></span>
-                          {item}
-                        </li>
-                      ))}
+              <p className="text-red-100 mt-2">Offer buyers peace of mind with comprehensive home protection</p>
+            </div>
+            <div className="p-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                
+                {/* Basic Home Warranty */}
+                <div className="border-2 border-red-200 rounded-xl p-6 hover:border-red-400 transition-all duration-300">
+                  <div className="text-center">
+                    <h4 className="text-xl font-bold text-gray-800 mb-2">Basic Home Warranty</h4>
+                    <div className="text-3xl font-bold text-red-600 mb-4">$450<span className="text-lg">/year</span></div>
+                    <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg mb-4 font-semibold">
+                      FREE as Buyer Incentive!
+                    </div>
+                    <ul className="text-gray-600 space-y-2 mb-6 text-left">
+                      <li>• Kitchen appliances coverage</li>
+                      <li>• HVAC system protection</li>
+                      <li>• Plumbing system coverage</li>
+                      <li>• Electrical system protection</li>
+                      <li>• Water heater coverage</li>
+                      <li>• Garage door opener</li>
                     </ul>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Common Pitfalls */}
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <div className="h-2 bg-gradient-to-r from-red-400 to-pink-500"></div>
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-red-400 to-pink-500 rounded-full mb-4">
-                  <AlertTriangle className="w-10 h-10 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">⚠️ Common Pitfalls & Prevention</h2>
-                <p className="text-gray-600">Learn from common mistakes and how to avoid them</p>
-              </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  {
-                    category: 'Documentation Errors',
-                    pitfall: 'Missing or incorrect paperwork',
-                    consequence: 'Delayed closings, legal issues',
-                    prevention: 'Use checklists, double-check all forms'
-                  },
-                  {
-                    category: 'Financial Issues',
-                    pitfall: 'Inadequate financing preparation',
-                    consequence: 'Loan denial, deal collapse',
-                    prevention: 'Pre-approval, financial planning'
-                  },
-                  {
-                    category: 'Inspection Problems',
-                    pitfall: 'Skipping or rushing inspections',
-                    consequence: 'Hidden defects, costly repairs',
-                    prevention: 'Thorough inspections, qualified inspectors'
-                  },
-                  {
-                    category: 'Title Issues',
-                    pitfall: 'Unclear property ownership',
-                    consequence: 'Legal disputes, ownership problems',
-                    prevention: 'Title search, title insurance'
-                  },
-                  {
-                    category: 'Contract Terms',
-                    pitfall: 'Vague or missing contract terms',
-                    consequence: 'Disputes, legal complications',
-                    prevention: 'Clear contracts, legal review'
-                  },
-                  {
-                    category: 'Closing Preparation',
-                    pitfall: 'Last-minute surprises',
-                    consequence: 'Delayed closings, additional costs',
-                    prevention: 'Early preparation, communication'
-                  }
-                ].map((pitfall, index) => (
-                  <div key={index} className="bg-gradient-to-br from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-6">
-                    <h3 className="text-lg font-bold text-red-800 mb-3">{pitfall.category}</h3>
-                    <div className="space-y-3">
-                      <div>
-                        <span className="text-sm font-semibold text-gray-700">Pitfall:</span>
-                        <p className="text-sm text-gray-600">{pitfall.pitfall}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm font-semibold text-red-700">Consequence:</span>
-                        <p className="text-sm text-red-600">{pitfall.consequence}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm font-semibold text-green-700">Prevention:</span>
-                        <p className="text-sm text-green-600">{pitfall.prevention}</p>
-                      </div>
+                {/* Premium Home Warranty */}
+                <div className="border-2 border-red-200 rounded-xl p-6 hover:border-red-400 transition-all duration-300">
+                  <div className="text-center">
+                    <h4 className="text-xl font-bold text-gray-800 mb-2">Premium Home Warranty</h4>
+                    <div className="text-3xl font-bold text-red-600 mb-4">$650<span className="text-lg">/year</span></div>
+                    <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg mb-4 font-semibold">
+                      FREE as Buyer Incentive!
                     </div>
+                    <ul className="text-gray-600 space-y-2 mb-6 text-left">
+                      <li>• All Basic coverage items</li>
+                      <li>• Washer & dryer coverage</li>
+                      <li>• Pool/spa equipment</li>
+                      <li>• Roof leak coverage</li>
+                      <li>• Additional refrigerator</li>
+                      <li>• Well pump coverage</li>
+                      <li>• Septic system coverage</li>
+                    </ul>
                   </div>
-                ))}
+                </div>
+
+              </div>
+              
+              <div className="mt-6 bg-red-50 p-6 rounded-xl">
+                <h4 className="text-lg font-bold text-red-800 mb-3">Why Offer Home Warranty as an Incentive?</h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <ul className="text-red-700 space-y-2">
+                    <li>• Reduces buyer anxiety about potential repairs</li>
+                    <li>• Makes your listing more attractive</li>
+                    <li>• Can help close deals faster</li>
+                  </ul>
+                  <ul className="text-red-700 space-y-2">
+                    <li>• Differentiates from other listings</li>
+                    <li>• Shows seller confidence in property</li>
+                    <li>• Minimal cost for maximum impact</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Legal Disclaimer */}
-          <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-3xl p-8">
-            <div className="text-center">
-              <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-4">⚖️ Legal Disclaimer</h3>
-              <div className="max-w-4xl mx-auto text-gray-300 space-y-4">
-                <p>
-                  <strong>Important:</strong> The forms and information provided here are for educational purposes only and should not be considered legal advice.
-                </p>
-                <p>
-                  Real estate laws vary by state and locality. Always consult with a qualified real estate attorney, licensed real estate professional, or other qualified professional before using any forms or making legal decisions.
-                </p>
-                <p>
-                  We make no warranties about the accuracy, completeness, or suitability of these materials for your specific situation. Use of these resources is at your own risk.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -1227,24 +1374,6 @@ function App() {
               </div>
             </div>
           </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex gap-4 mb-6">
-            <button
-              onClick={() => setShowLegalForms(true)}
-              className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
-            >
-              <FileText className="w-5 h-5" />
-              Legal Forms
-            </button>
-            <button
-              onClick={() => setShowToolsServices(true)}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
-            >
-              <Wrench className="w-5 h-5" />
-              Tools & Services
-            </button>
-          </div>
           
           {/* Enhanced Progress Bar with Step Counter */}
           <div className="mt-6">
@@ -1285,6 +1414,24 @@ function App() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Tools & Services and Marketing Hub Buttons */}
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={() => setShowToolsServices(true)}
+              className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              <Calculator className="w-5 h-5" />
+              Tools & Services
+            </button>
+            <button
+              onClick={() => setShowMarketingHub(true)}
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              <Target className="w-5 h-5" />
+              Marketing Hub
+            </button>
           </div>
         </div>
       </div>
