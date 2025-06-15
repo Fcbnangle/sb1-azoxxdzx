@@ -1,62 +1,20 @@
 import React, { useState } from 'react';
-import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, Scale, FileText, Wrench, Megaphone, HelpCircle, ChevronDown, ChevronUp, Users, HandHeart, AlertTriangle, Calculator, Clock, Phone, Mail, MessageCircle, Camera, Share2, Printer, Edit3, Eye, Download, Upload, Copy, Check, X, Menu, Search, Filter, Heart, Bookmark, Globe, Zap, Target, Award, Lightbulb, PieChart, BarChart3, TrendingDown, RefreshCw, PlayCircle, PauseCircle, Volume2, VolumeX, Maximize, Minimize, RotateCcw, Crop, Palette, Type, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, List, Link, Image, Video, Mic, Headphones, Speaker, Wifi, Signal, Battery, Settings, Lock, Unlock, ShieldCheck, AlertCircle, Info, Plus, Minus, Equal, Percent, Hash, AtSign, DollarSign as Dollar } from 'lucide-react';
+import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, Scale, FileText, Wrench, Megaphone, HelpCircle, ChevronDown, ChevronUp, Users, HandHeart, AlertTriangle, Calculator, Clock, Phone, Camera, PenTool, Share2, MessageSquare, Lightbulb, Target, Award, Zap, BookOpen, Video, Mail, HeadphonesIcon, Search, Filter, Eye, Heart, Bath, Bed, Square, Car, TreePine, Wifi, Dumbbell, Waves, Flame, Snowflake, Dog, Baby, Wheelchair, ShoppingCart, Utensils, GraduationCap, Hospital, Plane, Train, Bus, Fuel, ShoppingBag, Coffee, Music, Palette, Gamepad2, Book, Tv, Sofa, Shirt, Scissors, Hammer, Paintbrush, Drill, Screwdriver, Ruler, Clipboard, PlusCircle, MinusCircle, Edit3, Trash2, Copy, Download, Upload, Save, Settings, Bell, Lock, Unlock, Key, Globe, Smartphone, Tablet, Laptop, Monitor, Printer, Headphones, Speaker, Microphone, Camera as CameraIcon, Video as VideoIcon, Image, Film, Music2, Radio, Disc, PlayCircle, PauseCircle, StopCircle, SkipBack, SkipForward, Volume2, VolumeX, Shuffle, Repeat, RotateCcw, RotateCw, ZoomIn, ZoomOut, Move, Crop, Maximize, Minimize, MoreHorizontal, MoreVertical, Menu, X, Plus, Minus, Equal, Percent, Hash, AtSign, Ampersand, Asterisk, Slash, Backslash, Pipe, Tilde, Caret, Underscore, Hyphen, Quote, Apostrophe, Semicolon, Colon, Comma, Period, ExclamationMark, QuestionMark, LeftParenthesis, RightParenthesis, LeftBracket, RightBracket, LeftBrace, RightBrace, LessThan, GreaterThan } from 'lucide-react';
 
 interface FormData {
-  // Property Details
+  financingType: string;
+  timeline: string;
   propertyType: string;
-  bedrooms: string;
-  bathrooms: string;
-  squareFootage: string;
-  lotSize: string;
-  yearBuilt: string;
-  propertyCondition: string;
-  
-  // Location
-  streetAddress: string;
+  occupancyType: string;
+  priceRange: string;
   city: string;
-  state: string;
-  zipCode: string;
-  neighborhood: string;
-  
-  // Pricing
-  askingPrice: string;
-  priceFlexibility: string;
-  marketAnalysis: string;
-  
-  // Features & Amenities
-  interiorFeatures: string[];
-  exteriorFeatures: string[];
-  appliances: string[];
-  utilities: string;
-  parking: string;
-  
-  // Listing Details
-  listingTitle: string;
-  propertyDescription: string;
-  keySellingPoints: string;
-  showingInstructions: string;
-  availabilitySchedule: string;
-  
-  // Legal & Financial
-  ownershipStatus: string;
-  mortgageStatus: string;
-  propertyTaxes: string;
-  hoaFees: string;
-  disclosures: string[];
-  
-  // Marketing Preferences
-  photoCount: string;
-  virtualTour: string;
-  marketingBudget: string;
-  targetBuyers: string;
-  urgencyLevel: string;
-  
-  // Contact Information
+  ficoScore: string;
+  employment: string;
+  downPayment: string;
+  veteran: string;
   name: string;
   email: string;
   phone: string;
-  preferredContact: string;
-  availability: string;
 }
 
 interface FAQItem {
@@ -65,11 +23,34 @@ interface FAQItem {
   category: string;
 }
 
-interface ChatMessage {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
+interface PropertyFormData {
+  propertyType: string;
+  bedrooms: string;
+  bathrooms: string;
+  squareFootage: string;
+  lotSize: string;
+  yearBuilt: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  listingPrice: string;
+  priceStrategy: string;
+  interiorFeatures: string[];
+  exteriorFeatures: string[];
+  appliances: string[];
+  listingTitle: string;
+  propertyDescription: string;
+  neighborhoodDescription: string;
+  showingAvailability: string;
+  showingInstructions: string;
+  ownerFinancing: string;
+  propertyDisclosures: string;
+  marketingPreferences: string[];
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  preferredContact: string;
 }
 
 function App() {
@@ -77,71 +58,64 @@ function App() {
   const [showSection, setShowSection] = useState<string>('home');
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [selectedFAQCategory, setSelectedFAQCategory] = useState<string>('all');
-  const [activeMarketingTool, setActiveMarketingTool] = useState<string>('ai-writer');
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [chatInput, setChatInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [selectedMarketingTool, setSelectedMarketingTool] = useState<string>('ai-writer');
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiResponse, setAiResponse] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [homeValue, setHomeValue] = useState<string>('500000');
   const [formData, setFormData] = useState<FormData>({
-    // Property Details
+    financingType: '',
+    timeline: '',
+    propertyType: '',
+    occupancyType: '',
+    priceRange: '',
+    city: '',
+    ficoScore: '',
+    employment: '',
+    downPayment: '',
+    veteran: '',
+    name: '',
+    email: '',
+    phone: ''
+  });
+  const [propertyFormData, setPropertyFormData] = useState<PropertyFormData>({
     propertyType: '',
     bedrooms: '',
     bathrooms: '',
     squareFootage: '',
     lotSize: '',
     yearBuilt: '',
-    propertyCondition: '',
-    
-    // Location
-    streetAddress: '',
+    address: '',
     city: '',
     state: '',
     zipCode: '',
-    neighborhood: '',
-    
-    // Pricing
-    askingPrice: '',
-    priceFlexibility: '',
-    marketAnalysis: '',
-    
-    // Features & Amenities
+    listingPrice: '',
+    priceStrategy: '',
     interiorFeatures: [],
     exteriorFeatures: [],
     appliances: [],
-    utilities: '',
-    parking: '',
-    
-    // Listing Details
     listingTitle: '',
     propertyDescription: '',
-    keySellingPoints: '',
+    neighborhoodDescription: '',
+    showingAvailability: '',
     showingInstructions: '',
-    availabilitySchedule: '',
-    
-    // Legal & Financial
-    ownershipStatus: '',
-    mortgageStatus: '',
-    propertyTaxes: '',
-    hoaFees: '',
-    disclosures: [],
-    
-    // Marketing Preferences
-    photoCount: '',
-    virtualTour: '',
-    marketingBudget: '',
-    targetBuyers: '',
-    urgencyLevel: '',
-    
-    // Contact Information
-    name: '',
-    email: '',
-    phone: '',
-    preferredContact: '',
-    availability: ''
+    ownerFinancing: '',
+    propertyDisclosures: '',
+    marketingPreferences: [],
+    contactName: '',
+    contactEmail: '',
+    contactPhone: '',
+    preferredContact: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [propertyCurrentStep, setPropertyCurrentStep] = useState(0);
 
-  const updateFormData = (field: keyof FormData, value: string | string[]) => {
+  const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updatePropertyFormData = (field: keyof PropertyFormData, value: string | string[]) => {
+    setPropertyFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const nextStep = () => {
@@ -156,123 +130,189 @@ function App() {
     }
   };
 
+  const nextPropertyStep = () => {
+    if (propertyCurrentStep < propertySteps.length - 1) {
+      setPropertyCurrentStep(propertyCurrentStep + 1);
+    }
+  };
+
+  const prevPropertyStep = () => {
+    if (propertyCurrentStep > 0) {
+      setPropertyCurrentStep(propertyCurrentStep - 1);
+    }
+  };
+
   const handleSubmit = async () => {
     console.log('Form submitted:', formData);
     setIsSubmitted(true);
   };
 
-  const sendChatMessage = async () => {
-    if (!chatInput.trim()) return;
+  const handlePropertySubmit = async () => {
+    console.log('Property listing submitted:', propertyFormData);
+    setIsSubmitted(true);
+  };
 
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      text: chatInput,
-      isUser: true,
-      timestamp: new Date()
-    };
-
-    setChatMessages(prev => [...prev, userMessage]);
-    setChatInput('');
-    setIsTyping(true);
-
+  const generateAIContent = async () => {
+    setIsGenerating(true);
     // Simulate AI response
     setTimeout(() => {
-      const aiResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        text: generateAIResponse(chatInput),
-        isUser: false,
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, aiResponse]);
-      setIsTyping(false);
-    }, 1500);
+      const responses = [
+        "Stunning 3-bedroom, 2-bathroom home in the heart of downtown! This beautifully maintained property features an open-concept living space, modern kitchen with granite countertops, and a spacious master suite. The backyard oasis includes a deck perfect for entertaining. Located in a quiet neighborhood with excellent schools nearby. Move-in ready!",
+        "Charming family home with character and modern updates throughout. Features include hardwood floors, updated kitchen, and a cozy fireplace in the living room. The large backyard is perfect for kids and pets. Great location with easy access to shopping, dining, and parks. Don't miss this opportunity!",
+        "Beautiful home offering the perfect blend of comfort and style. This well-maintained property boasts spacious rooms, plenty of natural light, and a fantastic layout for both daily living and entertaining. The neighborhood is known for its friendly community and convenient location."
+      ];
+      setAiResponse(responses[Math.floor(Math.random() * responses.length)]);
+      setIsGenerating(false);
+    }, 2000);
   };
 
-  const generateAIResponse = (input: string): string => {
-    const responses = [
-      "Here's a compelling listing description based on your property details...",
-      "I've crafted a professional description that highlights your home's best features...",
-      "This listing emphasizes the unique selling points of your property...",
-      "Here's an engaging description designed to attract serious buyers..."
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+  // Calculate savings based on home value
+  const calculateSavings = (value: number) => {
+    const agentCommission = value * 0.06; // 6% total commission
+    const ourFee = 2999; // Our flat fee
+    return agentCommission - ourFee;
   };
+
+  const savingsData = [
+    { value: 500000, savings: calculateSavings(500000) },
+    { value: 1000000, savings: calculateSavings(1000000) },
+    { value: 2000000, savings: calculateSavings(2000000) }
+  ];
+
+  const eightSteps = [
+    {
+      number: 1,
+      title: "Property Evaluation",
+      description: "Get your home professionally evaluated and determine the right listing price",
+      icon: <Calculator className="w-8 h-8" />,
+      details: "Use our free CMA tool and pricing calculator to set the optimal price"
+    },
+    {
+      number: 2,
+      title: "Prepare Your Home",
+      description: "Stage and prepare your property to attract maximum buyer interest",
+      icon: <Home className="w-8 h-8" />,
+      details: "Follow our staging checklist and home preparation guide"
+    },
+    {
+      number: 3,
+      title: "Professional Photography",
+      description: "Capture stunning photos that showcase your home's best features",
+      icon: <Camera className="w-8 h-8" />,
+      details: "Use our photography guide or hire recommended professionals"
+    },
+    {
+      number: 4,
+      title: "Create Your Listing",
+      description: "Build a compelling listing with our AI-powered description writer",
+      icon: <PenTool className="w-8 h-8" />,
+      details: "Generate professional descriptions and highlight key features"
+    },
+    {
+      number: 5,
+      title: "Market Your Property",
+      description: "Distribute your listing across 100+ websites and social platforms",
+      icon: <Megaphone className="w-8 h-8" />,
+      details: "Automatic syndication to MLS, Zillow, Realtor.com, and more"
+    },
+    {
+      number: 6,
+      title: "Manage Showings",
+      description: "Schedule and coordinate property viewings with potential buyers",
+      icon: <Calendar className="w-8 h-8" />,
+      details: "Use our showing scheduler and safety guidelines"
+    },
+    {
+      number: 7,
+      title: "Review Offers",
+      description: "Evaluate and negotiate offers with our guidance and tools",
+      icon: <FileText className="w-8 h-8" />,
+      details: "Access contract templates and negotiation strategies"
+    },
+    {
+      number: 8,
+      title: "Close the Sale",
+      description: "Complete the transaction with legal support and documentation",
+      icon: <CheckCircle className="w-8 h-8" />,
+      details: "Get help with contracts, inspections, and closing procedures"
+    }
+  ];
 
   const faqData: FAQItem[] = [
     {
-      question: "What if a buyer has their own agent?",
-      answer: "This is completely normal and happens frequently. When a buyer has their own agent, you'll typically pay the buyer's agent commission (usually 2.5-3% of the sale price). The buyer's agent will handle their client's interests, while you represent yourself. Make sure to clarify commission arrangements upfront and consider having a real estate attorney review any agreements.",
+      question: "What if the buyer has their own agent?",
+      answer: "This is very common! When a buyer has their own agent, you'll typically pay a 2.5-3% commission to the buyer's agent at closing. This is still much less than the 6% total commission you'd pay with traditional real estate agents. Our platform helps you handle this situation professionally, including proper documentation and commission agreements.",
       category: "agents"
     },
     {
-      question: "How do I determine the right asking price?",
-      answer: "Research comparable sales (comps) in your neighborhood from the last 3-6 months. Look at properties with similar size, age, and features. Consider getting a professional appraisal ($300-500) or use online valuation tools as a starting point. Price competitively - overpricing can lead to your home sitting on the market longer.",
+      question: "How do I determine the right price for my home?",
+      answer: "We provide several tools to help you price your home competitively: a free Comparative Market Analysis (CMA) tool, access to recent sales data in your area, and pricing strategy guides. You can also opt for a professional appraisal. Our AI-powered pricing assistant analyzes local market trends to suggest optimal pricing strategies.",
       category: "pricing"
     },
     {
-      question: "What legal documents do I need?",
-      answer: "Essential documents include: property deed, recent survey, property disclosure statement, lead paint disclosure (if built before 1978), HOA documents (if applicable), utility bills, property tax records, and any warranties. Consider hiring a real estate attorney to review contracts and handle the closing process.",
-      category: "legal"
-    },
-    {
-      question: "How do I handle showings safely?",
-      answer: "Always verify potential buyers' identity and pre-qualify them financially. Require appointments and avoid last-minute showings. Have someone else present during showings when possible. Secure valuables and personal information. Consider using a lockbox system and require proof of funds or pre-approval letters before showing.",
+      question: "Is it safe to show my home to strangers?",
+      answer: "Safety is our top priority. We provide comprehensive safety guidelines including: requiring pre-qualification of buyers, conducting showings during daylight hours, having a friend present during showings, using our secure showing scheduler that collects buyer information, and providing safety checklists. We also offer virtual tour options to pre-screen serious buyers.",
       category: "safety"
     },
     {
-      question: "What are the typical closing costs for sellers?",
-      answer: "Seller closing costs typically range from 6-10% of the sale price, including: buyer's agent commission (2.5-3%), title insurance, attorney fees, transfer taxes, recording fees, and any agreed-upon repairs or credits. Budget accordingly and factor these costs into your net proceeds calculation.",
-      category: "financial"
-    },
-    {
-      question: "How long does it typically take to sell FSBO?",
-      answer: "FSBO properties typically take 1-3 months longer to sell than agent-listed properties, depending on market conditions, pricing, and marketing efforts. Success factors include competitive pricing, professional photos, broad marketing reach, and flexibility with showings. Stay patient but be prepared to adjust strategy if needed.",
-      category: "process"
-    },
-    {
-      question: "Should I allow buyers to bring their own inspectors?",
-      answer: "Yes, professional inspections are standard practice and protect both parties. Buyers typically pay for their own inspections. Be prepared for inspection requests and negotiate repairs reasonably. Consider getting a pre-inspection yourself to identify and address issues beforehand.",
-      category: "process"
-    },
-    {
-      question: "How do I market my home effectively?",
-      answer: "Use multiple channels: online listings (Zillow, FSBO.com, Craigslist), social media, yard signs, flyers, and word-of-mouth. Professional photos are crucial - they're often the first impression. Consider virtual tours, open houses, and targeted online advertising. Highlight unique features and neighborhood benefits.",
-      category: "marketing"
-    },
-    {
-      question: "What if I receive multiple offers?",
-      answer: "Review all offers carefully, considering not just price but also terms, financing, contingencies, and closing timeline. You can counter multiple offers simultaneously or choose your preferred offer to negotiate with. Consider the buyer's financial qualification and flexibility. A higher offer isn't always the best offer.",
+      question: "What legal documents do I need?",
+      answer: "We provide access to all necessary legal documents including: purchase agreements, disclosure forms, property condition reports, and closing documents. Our legal resource center includes state-specific forms and requirements. We also offer optional legal review services and can connect you with real estate attorneys in your area.",
       category: "legal"
     },
     {
-      question: "Do I need to stage my home?",
-      answer: "While not required, staging can help your home sell faster and for a higher price. Focus on decluttering, deep cleaning, neutral colors, and maximizing space and light. Even basic staging like removing personal items and rearranging furniture can make a significant difference in buyer perception.",
+      question: "How long does it typically take to sell?",
+      answer: "The average time to sell varies by market conditions, but FSBO homes typically sell within 30-90 days when priced correctly and marketed effectively. Our platform's wide distribution network and marketing tools help reduce time on market. We provide market timing insights and strategies to optimize your selling timeline.",
+      category: "process"
+    },
+    {
+      question: "What costs should I expect besides your fee?",
+      answer: "Additional costs may include: buyer's agent commission (if applicable, 2.5-3%), closing costs (1-3% of sale price), any needed repairs or improvements, professional photography ($200-500), and potential legal fees. Our cost calculator helps you estimate total expenses upfront so there are no surprises.",
+      category: "financial"
+    },
+    {
+      question: "How do you market my property?",
+      answer: "Your listing gets maximum exposure through: MLS syndication to 100+ websites (Zillow, Realtor.com, etc.), social media marketing campaigns, professional photography showcase, virtual tours and 3D walkthroughs, targeted online advertising, email marketing to our buyer network, and local community promotion.",
       category: "marketing"
+    },
+    {
+      question: "Can I still use the MLS without an agent?",
+      answer: "Yes! Our service includes MLS listing, which gives you the same exposure as traditional agent listings. Your property will appear on all major real estate websites and be visible to all agents and buyers. This is one of our key advantages - you get MLS access without paying full agent commissions.",
+      category: "marketing"
+    },
+    {
+      question: "What if I need help during the process?",
+      answer: "We provide comprehensive support including: 24/7 customer service, live chat during business hours, phone consultations with real estate experts, step-by-step guides and video tutorials, legal document assistance, and access to our network of professionals (photographers, inspectors, attorneys) when needed.",
+      category: "process"
     },
     {
       question: "How do I handle negotiations?",
-      answer: "Stay objective and don't take offers personally. Consider all aspects of an offer, not just price. Be prepared to counter-offer and negotiate terms like closing date, repairs, and contingencies. Set your bottom line beforehand and stick to it. Consider consulting with a real estate attorney for complex negotiations.",
-      category: "process"
-    },
-    {
-      question: "What are common FSBO mistakes to avoid?",
-      answer: "Common mistakes include: overpricing, poor quality photos, inadequate marketing, being inflexible with showings, not pre-qualifying buyers, inadequate legal preparation, emotional decision-making, and not understanding local market conditions. Research thoroughly and consider professional help for legal and financial aspects.",
-      category: "process"
-    },
-    {
-      question: "Should I offer buyer incentives?",
-      answer: "Incentives can help attract buyers in competitive markets. Consider offering to pay closing costs, including warranties, or providing credits for updates. However, ensure incentives don't signal desperation. Sometimes lowering the price is more effective than offering incentives.",
-      category: "pricing"
-    },
-    {
-      question: "How do I verify a buyer's financial qualification?",
-      answer: "Request pre-approval letters from lenders, proof of funds for cash buyers, and employment verification. Be wary of buyers who can't provide financial documentation. For cash offers, verify funds through bank statements or proof of funds letters from financial institutions.",
-      category: "financial"
-    },
-    {
-      question: "What happens at closing?",
-      answer: "Closing involves signing transfer documents, exchanging funds, and transferring ownership. You'll need to provide clear title, complete any agreed-upon repairs, and pay closing costs. Consider hiring a real estate attorney to represent your interests and ensure all legal requirements are met.",
+      answer: "Our platform includes negotiation tools and guidance: offer evaluation checklists, counteroffer templates, market data to support your position, negotiation strategy guides, and access to experienced negotiators for consultation. We help you understand each offer component and make informed decisions.",
       category: "legal"
+    },
+    {
+      question: "What happens if my home doesn't sell?",
+      answer: "We're committed to your success. If your home doesn't sell within 90 days, we offer: free pricing consultation and adjustment recommendations, enhanced marketing package at no extra cost, additional professional photography if needed, and extended listing period. Our success rate is over 85% within the first 90 days.",
+      category: "process"
+    },
+    {
+      question: "Do you help with paperwork and contracts?",
+      answer: "Absolutely! We provide: state-specific contract templates, guided contract completion, document review checklists, electronic signature capabilities, secure document storage, and optional legal review services. Our document center makes paperwork simple and ensures you don't miss important details.",
+      category: "legal"
+    },
+    {
+      question: "How do I prepare my home for showings?",
+      answer: "We provide a comprehensive preparation guide including: decluttering and staging tips, minor repair recommendations, curb appeal enhancement ideas, professional cleaning checklists, and showing day preparation. Our staging guide has helped sellers increase their sale price by an average of 8%.",
+      category: "process"
+    },
+    {
+      question: "What makes your service different from other FSBO platforms?",
+      answer: "Our advantages include: full MLS access and syndication, AI-powered listing optimization, comprehensive legal support, 24/7 customer service, professional marketing tools, safety-first showing protocols, transparent flat-fee pricing, and a 90-day success guarantee. We combine technology with human expertise.",
+      category: "process"
+    },
+    {
+      question: "Can I get professional photos taken?",
+      answer: "Yes! We offer professional photography services through our network of certified photographers. Packages start at $199 and include: high-resolution photos, virtual staging options, drone photography (where permitted), twilight shots, and 3D virtual tours. Professional photos typically increase showing requests by 40%.",
+      category: "marketing"
     }
   ];
 
@@ -297,318 +337,241 @@ function App() {
 
   const steps = [
     {
-      title: "Property Type & Basic Info",
-      icon: <Home className="w-6 h-6" />,
+      title: "What type of financing are you looking for?",
+      field: "financingType" as keyof FormData,
+      options: [
+        { value: "purchase", label: "Purchase a Home", icon: <Home className="w-6 h-6" /> },
+        { value: "refinance", label: "Refinance", icon: <CreditCard className="w-6 h-6" /> },
+        { value: "cashout", label: "Cash-Out Refinance", icon: <DollarSign className="w-6 h-6" /> },
+        { value: "heloc", label: "Home Equity Line", icon: <TrendingUp className="w-6 h-6" /> }
+      ]
+    },
+    {
+      title: "When are you looking to close?",
+      field: "timeline" as keyof FormData,
+      options: [
+        { value: "asap", label: "ASAP", icon: <Zap className="w-6 h-6" /> },
+        { value: "30days", label: "Within 30 days", icon: <Calendar className="w-6 h-6" /> },
+        { value: "60days", label: "Within 60 days", icon: <Calendar className="w-6 h-6" /> },
+        { value: "90days", label: "Within 90 days", icon: <Calendar className="w-6 h-6" /> }
+      ]
+    }
+  ];
+
+  const propertySteps = [
+    {
+      title: "Property Details",
+      description: "Tell us about your property",
       fields: [
         {
           label: "Property Type",
-          key: "propertyType" as keyof FormData,
+          field: "propertyType" as keyof PropertyFormData,
           type: "select",
-          options: ["Single Family Home", "Townhouse", "Condo", "Multi-Family", "Mobile Home", "Land", "Commercial"]
+          options: ["Single Family Home", "Townhouse", "Condo", "Multi-Family", "Land", "Commercial"]
         },
         {
           label: "Bedrooms",
-          key: "bedrooms" as keyof FormData,
+          field: "bedrooms" as keyof PropertyFormData,
           type: "select",
           options: ["1", "2", "3", "4", "5", "6+"]
         },
         {
           label: "Bathrooms",
-          key: "bathrooms" as keyof FormData,
+          field: "bathrooms" as keyof PropertyFormData,
           type: "select",
-          options: ["1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5+"]
+          options: ["1", "1.5", "2", "2.5", "3", "3.5", "4+"]
         },
         {
           label: "Square Footage",
-          key: "squareFootage" as keyof FormData,
-          type: "input",
-          placeholder: "e.g., 2,500"
+          field: "squareFootage" as keyof PropertyFormData,
+          type: "number",
+          placeholder: "e.g., 2000"
         },
         {
-          label: "Lot Size",
-          key: "lotSize" as keyof FormData,
-          type: "input",
-          placeholder: "e.g., 0.25 acres or 10,890 sq ft"
+          label: "Lot Size (acres)",
+          field: "lotSize" as keyof PropertyFormData,
+          type: "number",
+          placeholder: "e.g., 0.25"
         },
         {
           label: "Year Built",
-          key: "yearBuilt" as keyof FormData,
-          type: "input",
+          field: "yearBuilt" as keyof PropertyFormData,
+          type: "number",
           placeholder: "e.g., 1995"
-        },
-        {
-          label: "Property Condition",
-          key: "propertyCondition" as keyof FormData,
-          type: "select",
-          options: ["Excellent", "Good", "Fair", "Needs Work", "Fixer Upper"]
         }
       ]
     },
     {
-      title: "Location Details",
-      icon: <MapPin className="w-6 h-6" />,
+      title: "Location",
+      description: "Where is your property located?",
       fields: [
         {
           label: "Street Address",
-          key: "streetAddress" as keyof FormData,
-          type: "input",
+          field: "address" as keyof PropertyFormData,
+          type: "text",
           placeholder: "123 Main Street"
         },
         {
           label: "City",
-          key: "city" as keyof FormData,
-          type: "input",
+          field: "city" as keyof PropertyFormData,
+          type: "text",
           placeholder: "Your City"
         },
         {
           label: "State",
-          key: "state" as keyof FormData,
-          type: "select",
-          options: ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
+          field: "state" as keyof PropertyFormData,
+          type: "text",
+          placeholder: "State"
         },
         {
           label: "ZIP Code",
-          key: "zipCode" as keyof FormData,
-          type: "input",
+          field: "zipCode" as keyof PropertyFormData,
+          type: "text",
           placeholder: "12345"
-        },
-        {
-          label: "Neighborhood/Subdivision",
-          key: "neighborhood" as keyof FormData,
-          type: "input",
-          placeholder: "e.g., Oak Hills, Downtown, etc."
         }
       ]
     },
     {
-      title: "Pricing Strategy",
-      icon: <DollarSign className="w-6 h-6" />,
+      title: "Pricing",
+      description: "Set your listing price",
       fields: [
         {
-          label: "Asking Price",
-          key: "askingPrice" as keyof FormData,
-          type: "input",
-          placeholder: "$000,000"
+          label: "Listing Price",
+          field: "listingPrice" as keyof PropertyFormData,
+          type: "number",
+          placeholder: "e.g., 450000"
         },
         {
-          label: "Price Flexibility",
-          key: "priceFlexibility" as keyof FormData,
+          label: "Pricing Strategy",
+          field: "priceStrategy" as keyof PropertyFormData,
           type: "select",
-          options: ["Firm on Price", "Somewhat Negotiable", "Very Negotiable", "Open to Best Offer"]
-        },
-        {
-          label: "Market Analysis Completed?",
-          key: "marketAnalysis" as keyof FormData,
-          type: "select",
-          options: ["Yes - Professional Appraisal", "Yes - Online Research", "Yes - Realtor CMA", "No - Need Help"]
+          options: ["Market Value", "Priced to Sell", "Room for Negotiation", "Firm Price"]
         }
       ]
     },
     {
       title: "Interior Features",
-      icon: <Building className="w-6 h-6" />,
+      description: "What features does your home have?",
       fields: [
         {
-          label: "Interior Features (Select all that apply)",
-          key: "interiorFeatures" as keyof FormData,
+          label: "Interior Features",
+          field: "interiorFeatures" as keyof PropertyFormData,
           type: "checkbox",
-          options: [
-            "Hardwood Floors", "Tile Flooring", "Carpet", "Updated Kitchen", "Granite Countertops", 
-            "Stainless Steel Appliances", "Walk-in Closets", "Master Suite", "Fireplace", 
-            "High Ceilings", "Open Floor Plan", "Formal Dining Room", "Home Office", 
-            "Basement", "Finished Basement", "Attic Storage", "Laundry Room", "Pantry"
-          ]
-        },
-        {
-          label: "Included Appliances (Select all that apply)",
-          key: "appliances" as keyof FormData,
-          type: "checkbox",
-          options: [
-            "Refrigerator", "Dishwasher", "Range/Oven", "Microwave", "Washer", "Dryer", 
-            "Garbage Disposal", "Wine Cooler", "Ice Maker"
-          ]
-        },
-        {
-          label: "Utilities",
-          key: "utilities" as keyof FormData,
-          type: "select",
-          options: ["All Electric", "Gas & Electric", "Oil Heat", "Solar", "Well Water", "City Water & Sewer"]
+          options: ["Hardwood Floors", "Granite Countertops", "Stainless Steel Appliances", "Fireplace", "Walk-in Closets", "Updated Kitchen", "Updated Bathrooms", "Crown Molding", "High Ceilings", "Open Floor Plan"]
         }
       ]
     },
     {
       title: "Exterior Features",
-      icon: <Home className="w-6 h-6" />,
+      description: "Tell us about the outside of your property",
       fields: [
         {
-          label: "Exterior Features (Select all that apply)",
-          key: "exteriorFeatures" as keyof FormData,
+          label: "Exterior Features",
+          field: "exteriorFeatures" as keyof PropertyFormData,
           type: "checkbox",
-          options: [
-            "Deck", "Patio", "Pool", "Hot Tub", "Fenced Yard", "Landscaping", 
-            "Sprinkler System", "Shed", "Workshop", "RV Parking", "Boat Dock", 
-            "Tennis Court", "Basketball Court", "Playground", "Garden Area"
-          ]
-        },
+          options: ["Swimming Pool", "Hot Tub", "Deck/Patio", "Fenced Yard", "Garage", "Carport", "Garden", "Sprinkler System", "Outdoor Kitchen", "Workshop/Shed"]
+        }
+      ]
+    },
+    {
+      title: "Appliances",
+      description: "What appliances are included?",
+      fields: [
         {
-          label: "Parking",
-          key: "parking" as keyof FormData,
-          type: "select",
-          options: ["No Garage", "1-Car Garage", "2-Car Garage", "3+ Car Garage", "Carport", "Street Parking Only"]
+          label: "Included Appliances",
+          field: "appliances" as keyof PropertyFormData,
+          type: "checkbox",
+          options: ["Refrigerator", "Dishwasher", "Washer", "Dryer", "Microwave", "Oven/Range", "Garbage Disposal", "Wine Cooler", "Freezer"]
         }
       ]
     },
     {
       title: "Listing Description",
-      icon: <Edit3 className="w-6 h-6" />,
+      description: "Create compelling descriptions",
       fields: [
         {
           label: "Listing Title",
-          key: "listingTitle" as keyof FormData,
-          type: "input",
-          placeholder: "e.g., Beautiful 3BR/2BA Home in Quiet Neighborhood"
+          field: "listingTitle" as keyof PropertyFormData,
+          type: "text",
+          placeholder: "e.g., Beautiful Family Home in Quiet Neighborhood"
         },
         {
           label: "Property Description",
-          key: "propertyDescription" as keyof FormData,
+          field: "propertyDescription" as keyof PropertyFormData,
           type: "textarea",
-          placeholder: "Describe your home's best features, recent updates, neighborhood amenities..."
+          placeholder: "Describe your property's best features, recent updates, and what makes it special..."
         },
         {
-          label: "Key Selling Points",
-          key: "keySellingPoints" as keyof FormData,
+          label: "Neighborhood Description",
+          field: "neighborhoodDescription" as keyof PropertyFormData,
           type: "textarea",
-          placeholder: "What makes your home special? Recent renovations, unique features, location benefits..."
+          placeholder: "Describe the neighborhood, nearby amenities, schools, shopping, etc..."
         }
       ]
     },
     {
-      title: "Showing & Availability",
-      icon: <Calendar className="w-6 h-6" />,
+      title: "Showing Information",
+      description: "How do you want to handle showings?",
       fields: [
         {
-          label: "Showing Instructions",
-          key: "showingInstructions" as keyof FormData,
+          label: "Showing Availability",
+          field: "showingAvailability" as keyof PropertyFormData,
           type: "select",
-          options: ["Call First", "Text First", "24 Hour Notice", "Appointment Only", "Lockbox Available"]
+          options: ["Weekdays Only", "Weekends Only", "Weekdays and Weekends", "By Appointment Only", "Open House Scheduled"]
         },
         {
-          label: "Availability Schedule",
-          key: "availabilitySchedule" as keyof FormData,
+          label: "Special Showing Instructions",
+          field: "showingInstructions" as keyof PropertyFormData,
           type: "textarea",
-          placeholder: "When are you available for showings? Any restrictions or preferred times?"
+          placeholder: "Any special instructions for showings (e.g., remove shoes, pets present, etc.)"
         }
       ]
     },
     {
-      title: "Legal & Financial",
-      icon: <FileText className="w-6 h-6" />,
+      title: "Financial & Legal",
+      description: "Additional property information",
       fields: [
         {
-          label: "Ownership Status",
-          key: "ownershipStatus" as keyof FormData,
+          label: "Owner Financing Available?",
+          field: "ownerFinancing" as keyof PropertyFormData,
           type: "select",
-          options: ["Own Free & Clear", "Have Mortgage", "Inherited Property", "Estate Sale", "Divorce Sale"]
+          options: ["No", "Yes - Qualified Buyers", "Yes - Flexible Terms"]
         },
         {
-          label: "Mortgage Status",
-          key: "mortgageStatus" as keyof FormData,
-          type: "select",
-          options: ["No Mortgage", "Current on Payments", "Behind on Payments", "Short Sale Needed"]
-        },
-        {
-          label: "Annual Property Taxes",
-          key: "propertyTaxes" as keyof FormData,
-          type: "input",
-          placeholder: "$0,000"
-        },
-        {
-          label: "HOA Fees (if applicable)",
-          key: "hoaFees" as keyof FormData,
-          type: "input",
-          placeholder: "$000/month or N/A"
-        },
-        {
-          label: "Required Disclosures (Select all that apply)",
-          key: "disclosures" as keyof FormData,
-          type: "checkbox",
-          options: [
-            "Lead Paint (Pre-1978)", "Asbestos", "Previous Flooding", "Foundation Issues", 
-            "Roof Problems", "HVAC Issues", "Plumbing Problems", "Electrical Issues", 
-            "Pest/Termite History", "Environmental Hazards", "Neighborhood Noise", "None"
-          ]
-        }
-      ]
-    },
-    {
-      title: "Marketing Preferences",
-      icon: <Megaphone className="w-6 h-6" />,
-      fields: [
-        {
-          label: "How many photos do you have?",
-          key: "photoCount" as keyof FormData,
-          type: "select",
-          options: ["None - Need Help", "1-5 Photos", "6-15 Photos", "16-25 Photos", "25+ Photos", "Professional Photos"]
-        },
-        {
-          label: "Virtual Tour Available?",
-          key: "virtualTour" as keyof FormData,
-          type: "select",
-          options: ["No", "Yes - Have Video", "Yes - 3D Tour", "Need Help Creating"]
-        },
-        {
-          label: "Marketing Budget",
-          key: "marketingBudget" as keyof FormData,
-          type: "select",
-          options: ["$0 - Free Only", "$1-100", "$101-300", "$301-500", "$500+"]
-        },
-        {
-          label: "Target Buyers",
-          key: "targetBuyers" as keyof FormData,
-          type: "select",
-          options: ["First-Time Buyers", "Families", "Retirees", "Investors", "Any Qualified Buyer"]
-        },
-        {
-          label: "How quickly do you need to sell?",
-          key: "urgencyLevel" as keyof FormData,
-          type: "select",
-          options: ["ASAP - Under 30 Days", "1-3 Months", "3-6 Months", "6+ Months", "No Rush"]
+          label: "Property Disclosures",
+          field: "propertyDisclosures" as keyof PropertyFormData,
+          type: "textarea",
+          placeholder: "Any known issues, recent repairs, or disclosures required by law..."
         }
       ]
     },
     {
       title: "Contact Information",
-      icon: <User className="w-6 h-6" />,
+      description: "How should buyers contact you?",
       fields: [
         {
-          label: "Full Name",
-          key: "name" as keyof FormData,
-          type: "input",
-          placeholder: "Your full name"
+          label: "Contact Name",
+          field: "contactName" as keyof PropertyFormData,
+          type: "text",
+          placeholder: "Your Name"
         },
         {
           label: "Email Address",
-          key: "email" as keyof FormData,
+          field: "contactEmail" as keyof PropertyFormData,
           type: "email",
           placeholder: "your.email@example.com"
         },
         {
           label: "Phone Number",
-          key: "phone" as keyof FormData,
+          field: "contactPhone" as keyof PropertyFormData,
           type: "tel",
           placeholder: "(555) 123-4567"
         },
         {
           label: "Preferred Contact Method",
-          key: "preferredContact" as keyof FormData,
+          field: "preferredContact" as keyof PropertyFormData,
           type: "select",
-          options: ["Phone", "Email", "Text", "Any Method"]
-        },
-        {
-          label: "Best Time to Contact",
-          key: "availability" as keyof FormData,
-          type: "select",
-          options: ["Morning (8AM-12PM)", "Afternoon (12PM-5PM)", "Evening (5PM-8PM)", "Anytime", "Weekends Only"]
+          options: ["Phone", "Email", "Text Message", "Any Method"]
         }
       ]
     }
@@ -617,335 +580,309 @@ function App() {
   const renderNavigation = () => (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Home className="h-8 w-8 text-blue-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">SellMyHome</span>
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center space-x-2">
+            <Home className="w-8 h-8 text-blue-600" />
+            <span className="text-xl font-bold text-gray-900">SellMyHome</span>
           </div>
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex space-x-8">
             <button
               onClick={() => setShowSection('home')}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                showSection === 'home' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                showSection === 'home' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'
               }`}
             >
               Home
             </button>
             <button
-              onClick={() => setShowSection('questionnaire')}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                showSection === 'questionnaire' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
+              onClick={() => setShowSection('how-it-works')}
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                showSection === 'how-it-works' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'
               }`}
             >
-              List Your Home
+              How It Works
+            </button>
+            <button
+              onClick={() => setShowSection('list-property')}
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                showSection === 'list-property' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'
+              }`}
+            >
+              List Your Property
             </button>
             <button
               onClick={() => setShowSection('marketing')}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                showSection === 'marketing' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                showSection === 'marketing' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'
               }`}
             >
-              Marketing Hub
+              Marketing Tools
             </button>
             <button
               onClick={() => setShowSection('faq')}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                showSection === 'faq' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                showSection === 'faq' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'
               }`}
             >
               FAQ
             </button>
             <button
               onClick={() => setShowSection('contact')}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                showSection === 'contact' ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600'
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                showSection === 'contact' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'
               }`}
             >
-              Contact & Support
+              Support
             </button>
           </div>
+          <button
+            onClick={() => setShowSection('list-property')}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          >
+            Get Started
+          </button>
         </div>
       </div>
     </nav>
   );
 
-  const renderHomePage = () => (
+  const renderHome = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 bg-gradient-to-br from-blue-50 to-indigo-100 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-              <div className="sm:text-center lg:text-left">
-                <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                  <span className="block xl:inline">Sell Your Home</span>{' '}
-                  <span className="block text-blue-600 xl:inline">Without an Agent</span>
-                </h1>
-                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Save thousands in commission fees while maintaining full control of your home sale. Our platform provides all the tools and guidance you need to successfully sell your property.
-                </p>
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                  <div className="rounded-md shadow">
-                    <button
-                      onClick={() => setShowSection('questionnaire')}
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10 transition-colors"
-                    >
-                      Start Listing Your Home
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </button>
-                  </div>
-                  <div className="mt-3 sm:mt-0 sm:ml-3">
-                    <button
-                      onClick={() => setShowSection('marketing')}
-                      className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10 transition-colors"
-                    >
-                      Explore Marketing Tools
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </main>
-          </div>
-        </div>
-        <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-          <img
-            className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
-            src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            alt="Beautiful home for sale"
-          />
-        </div>
-      </div>
-
-      {/* Benefits Section */}
-      <div className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Benefits</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              Why Sell Without an Agent?
-            </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              Take control of your home sale and keep more money in your pocket.
-            </p>
-          </div>
-
-          <div className="mt-10">
-            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <DollarSign className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Save on Commission</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Keep the 5-6% commission typically paid to agents. On a $300,000 home, that's $15,000-$18,000 in savings.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <Shield className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Full Control</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Make all decisions about pricing, showings, negotiations, and timing without waiting for agent approval.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <Clock className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Flexible Schedule</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Schedule showings and open houses on your terms, when it's convenient for you and your family.
-                </p>
-              </div>
-
-              <div className="relative">
-                <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                  <Users className="h-6 w-6" />
-                </div>
-                <p className="ml-16 text-lg leading-6 font-medium text-gray-900">Direct Communication</p>
-                <p className="mt-2 ml-16 text-base text-gray-500">
-                  Communicate directly with potential buyers and their agents without information getting lost in translation.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Platform Features</h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              Everything You Need to Sell Successfully
-            </p>
-          </div>
-
-          <div className="mt-10">
-            <div className="space-y-10 md:space-y-0 md:grid md:grid-cols-3 md:gap-x-8 md:gap-y-10">
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-                  <Edit3 className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg leading-6 font-medium text-gray-900">AI Listing Writer</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Generate compelling property descriptions with our AI-powered listing writer.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-                  <Camera className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg leading-6 font-medium text-gray-900">Photography Guide</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Professional tips and checklists to take stunning photos that sell your home.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-                  <Share2 className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg leading-6 font-medium text-gray-900">Marketing Tools</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Social media templates, flyers, and marketing strategies to reach more buyers.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-                  <FileText className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg leading-6 font-medium text-gray-900">Legal Guidance</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Access to legal documents, disclosure forms, and expert guidance throughout the process.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-                  <Calculator className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg leading-6 font-medium text-gray-900">Pricing Tools</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Market analysis tools and pricing calculators to help you price competitively.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white mx-auto">
-                  <Phone className="h-6 w-6" />
-                </div>
-                <h3 className="mt-4 text-lg leading-6 font-medium text-gray-900">Expert Support</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Get help when you need it with email support, live chat, and optional consultations.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="bg-blue-600">
-        <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            <span className="block">Ready to get started?</span>
-            <span className="block">List your home today.</span>
-          </h2>
-          <p className="mt-4 text-lg leading-6 text-blue-200">
-            Join thousands of homeowners who have successfully sold their properties without paying agent commissions.
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <div className="text-center">
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            Sell Your Home
+            <span className="text-blue-600"> Without an Agent</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Save thousands in commission fees while getting full MLS exposure and professional marketing support. 
+            Join thousands of homeowners who've successfully sold their homes for more money.
           </p>
-          <button
-            onClick={() => setShowSection('questionnaire')}
-            className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 sm:w-auto transition-colors"
-          >
-            Start Your Listing
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <button
+              onClick={() => setShowSection('list-property')}
+              className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg"
+            >
+              List Your Home - $2,999
+            </button>
+            <button
+              onClick={() => setShowSection('how-it-works')}
+              className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 transition-colors shadow-lg border-2 border-blue-600"
+            >
+              See How It Works
+            </button>
+          </div>
+        </div>
+
+        {/* Savings Calculator */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">See How Much You'll Save</h2>
+            <p className="text-gray-600">Compare our flat fee to traditional agent commissions</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {savingsData.map((item, index) => (
+              <div key={index} className="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                <div className="text-2xl font-bold text-gray-900 mb-2">
+                  ${item.value.toLocaleString()} Home
+                </div>
+                <div className="text-sm text-gray-600 mb-4">
+                  Traditional Agent: ${(item.value * 0.06).toLocaleString()}
+                </div>
+                <div className="text-sm text-gray-600 mb-4">
+                  Our Fee: $2,999
+                </div>
+                <div className="text-3xl font-bold text-green-600 mb-2">
+                  Save ${item.savings.toLocaleString()}
+                </div>
+                <div className="text-sm text-green-700 font-medium">
+                  {((item.savings / item.value) * 100).toFixed(1)}% savings
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center space-x-4 bg-blue-50 px-6 py-3 rounded-lg">
+              <Calculator className="w-6 h-6 text-blue-600" />
+              <div>
+                <input
+                  type="number"
+                  value={homeValue}
+                  onChange={(e) => setHomeValue(e.target.value)}
+                  className="bg-white border border-gray-300 rounded px-3 py-1 w-32 text-center"
+                  placeholder="Home value"
+                />
+                <div className="text-sm text-gray-600 mt-1">
+                  Your savings: <span className="font-bold text-green-600">
+                    ${calculateSavings(parseInt(homeValue) || 0).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <DollarSign className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">Save Thousands</h3>
+            <p className="text-gray-600">Pay only $2,999 instead of 6% commission. On a $500k home, that's $27,001 in savings!</p>
+          </div>
+          <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">Full MLS Exposure</h3>
+            <p className="text-gray-600">Your listing appears on 100+ websites including Zillow, Realtor.com, and all agent searches.</p>
+          </div>
+          <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+            <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-8 h-8 text-purple-600" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">Expert Support</h3>
+            <p className="text-gray-600">Get professional guidance, legal documents, and marketing tools throughout the entire process.</p>
+          </div>
+        </div>
+
+        {/* Success Stats */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Proven Results</h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">85%</div>
+              <div className="text-gray-600">Sell within 90 days</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-green-600 mb-2">$27K</div>
+              <div className="text-gray-600">Average savings</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-purple-600 mb-2">10K+</div>
+              <div className="text-gray-600">Homes sold</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-orange-600 mb-2">4.8★</div>
+              <div className="text-gray-600">Customer rating</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 
-  const renderQuestionnaire = () => {
+  const renderHowItWorks = () => (
+    <div className="min-h-screen bg-gray-50 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Our proven 8-step process makes selling your home simple, safe, and profitable
+          </p>
+        </div>
+
+        <div className="space-y-12">
+          {eightSteps.map((step, index) => (
+            <div key={index} className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="flex flex-col lg:flex-row">
+                <div className="lg:w-1/3 bg-gradient-to-br from-blue-500 to-blue-600 p-8 text-white flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="bg-white bg-opacity-20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-3xl font-bold">{step.number}</span>
+                    </div>
+                    <div className="text-white text-opacity-90 mb-2">
+                      {step.icon}
+                    </div>
+                    <h3 className="text-2xl font-bold">{step.title}</h3>
+                  </div>
+                </div>
+                <div className="lg:w-2/3 p-8">
+                  <p className="text-lg text-gray-700 mb-4">{step.description}</p>
+                  <p className="text-gray-600">{step.details}</p>
+                  <div className="mt-6">
+                    <div className="flex items-center text-sm text-blue-600">
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Professional guidance included
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-16 text-center">
+          <div className="bg-blue-600 text-white rounded-2xl p-8">
+            <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+            <p className="text-xl mb-6">Join thousands of homeowners who've saved money selling their homes</p>
+            <button
+              onClick={() => setShowSection('list-property')}
+              className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
+              List Your Home Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderPropertyListing = () => {
     if (isSubmitted) {
       return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-md w-full space-y-8 text-center">
-            <div>
-              <CheckCircle className="mx-auto h-16 w-16 text-green-500" />
-              <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                Thank You!
-              </h2>
-              <p className="mt-2 text-sm text-gray-600">
-                Your listing information has been submitted successfully. We'll review your details and contact you within 24 hours with next steps.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">What's Next?</h3>
-              <ul className="text-left space-y-2 text-sm text-gray-600">
-                <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                  Review and verify your listing details
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                  Professional photography consultation
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                  Marketing strategy development
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                  List your home on major platforms
-                </li>
-              </ul>
-            </div>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md">
+            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Listing Submitted!</h2>
+            <p className="text-gray-600 mb-6">
+              Your property listing has been submitted successfully. Our team will review it and have it live on the MLS within 24 hours.
+            </p>
             <button
-              onClick={() => setShowSection('home')}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              onClick={() => {
+                setIsSubmitted(false);
+                setPropertyCurrentStep(0);
+                setShowSection('home');
+              }}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Return to Home
+              Return Home
             </button>
           </div>
         </div>
       );
     }
 
-    const currentStepData = steps[currentStep];
-    const progress = ((currentStep + 1) / steps.length) * 100;
+    const currentStepData = propertySteps[propertyCurrentStep];
 
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Progress Bar */}
           <div className="mb-8">
-            <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-              <span>Step {currentStep + 1} of {steps.length}</span>
-              <span>{Math.round(progress)}% Complete</span>
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl font-bold text-gray-900">List Your Property</h1>
+              <span className="text-sm text-gray-500">
+                Step {propertyCurrentStep + 1} of {propertySteps.length}
+              </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
-                style={{ width: `${progress}%` }}
+              <div
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${((propertyCurrentStep + 1) / propertySteps.length) * 100}%` }}
               ></div>
             </div>
           </div>
 
           {/* Step Content */}
-          <div className="bg-white shadow-lg rounded-lg p-6 md:p-8">
-            <div className="flex items-center mb-6">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg mr-4">
-                {currentStepData.icon}
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">{currentStepData.title}</h2>
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">{currentStepData.title}</h2>
+              <p className="text-gray-600">{currentStepData.description}</p>
             </div>
 
             <div className="space-y-6">
@@ -957,75 +894,85 @@ function App() {
                   
                   {field.type === 'select' && (
                     <select
-                      value={formData[field.key] as string}
-                      onChange={(e) => updateFormData(field.key, e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      value={propertyFormData[field.field] as string}
+                      onChange={(e) => updatePropertyFormData(field.field, e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="">Select an option...</option>
-                      {field.options?.map((option) => (
-                        <option key={option} value={option}>{option}</option>
+                      <option value="">Select {field.label}</option>
+                      {field.options?.map((option, optIndex) => (
+                        <option key={optIndex} value={option}>{option}</option>
                       ))}
                     </select>
                   )}
 
-                  {field.type === 'input' && (
+                  {field.type === 'text' && (
                     <input
                       type="text"
-                      value={formData[field.key] as string}
-                      onChange={(e) => updateFormData(field.key, e.target.value)}
+                      value={propertyFormData[field.field] as string}
+                      onChange={(e) => updatePropertyFormData(field.field, e.target.value)}
                       placeholder={field.placeholder}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  )}
+
+                  {field.type === 'number' && (
+                    <input
+                      type="number"
+                      value={propertyFormData[field.field] as string}
+                      onChange={(e) => updatePropertyFormData(field.field, e.target.value)}
+                      placeholder={field.placeholder}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   )}
 
                   {field.type === 'email' && (
                     <input
                       type="email"
-                      value={formData[field.key] as string}
-                      onChange={(e) => updateFormData(field.key, e.target.value)}
+                      value={propertyFormData[field.field] as string}
+                      onChange={(e) => updatePropertyFormData(field.field, e.target.value)}
                       placeholder={field.placeholder}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   )}
 
                   {field.type === 'tel' && (
                     <input
                       type="tel"
-                      value={formData[field.key] as string}
-                      onChange={(e) => updateFormData(field.key, e.target.value)}
+                      value={propertyFormData[field.field] as string}
+                      onChange={(e) => updatePropertyFormData(field.field, e.target.value)}
                       placeholder={field.placeholder}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   )}
 
                   {field.type === 'textarea' && (
                     <textarea
-                      value={formData[field.key] as string}
-                      onChange={(e) => updateFormData(field.key, e.target.value)}
+                      value={propertyFormData[field.field] as string}
+                      onChange={(e) => updatePropertyFormData(field.field, e.target.value)}
                       placeholder={field.placeholder}
                       rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   )}
 
                   {field.type === 'checkbox' && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {field.options?.map((option) => (
-                        <label key={option} className="flex items-center">
+                    <div className="grid grid-cols-2 gap-3">
+                      {field.options?.map((option, optIndex) => (
+                        <label key={optIndex} className="flex items-center space-x-2 cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={(formData[field.key] as string[])?.includes(option) || false}
+                            checked={(propertyFormData[field.field] as string[])?.includes(option) || false}
                             onChange={(e) => {
-                              const currentValues = (formData[field.key] as string[]) || [];
+                              const currentValues = (propertyFormData[field.field] as string[]) || [];
                               if (e.target.checked) {
-                                updateFormData(field.key, [...currentValues, option]);
+                                updatePropertyFormData(field.field, [...currentValues, option]);
                               } else {
-                                updateFormData(field.key, currentValues.filter(v => v !== option));
+                                updatePropertyFormData(field.field, currentValues.filter(v => v !== option));
                               }
                             }}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                           />
-                          <span className="ml-2 text-sm text-gray-700">{option}</span>
+                          <span className="text-sm text-gray-700">{option}</span>
                         </label>
                       ))}
                     </div>
@@ -1037,33 +984,33 @@ function App() {
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
               <button
-                onClick={prevStep}
-                disabled={currentStep === 0}
-                className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  currentStep === 0
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                onClick={prevPropertyStep}
+                disabled={propertyCurrentStep === 0}
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                  propertyCurrentStep === 0
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Previous
+                <ArrowLeft className="w-4 h-4" />
+                <span>Previous</span>
               </button>
 
-              {currentStep === steps.length - 1 ? (
+              {propertyCurrentStep === propertySteps.length - 1 ? (
                 <button
-                  onClick={handleSubmit}
-                  className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                  onClick={handlePropertySubmit}
+                  className="flex items-center space-x-2 bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
                 >
-                  Submit Listing
-                  <Send className="h-4 w-4 ml-2" />
+                  <span>Submit Listing</span>
+                  <Send className="w-4 h-4" />
                 </button>
               ) : (
                 <button
-                  onClick={nextStep}
-                  className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                  onClick={nextPropertyStep}
+                  className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                 >
-                  Next
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  <span>Next</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -1073,161 +1020,109 @@ function App() {
     );
   };
 
-  const renderMarketingHub = () => (
-    <div className="min-h-screen bg-gray-50 py-8">
+  const renderMarketingTools = () => (
+    <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Marketing Hub
-          </h1>
-          <p className="mt-4 text-xl text-gray-600">
-            Professional tools to market your home effectively
-          </p>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Marketing Tools</h1>
+          <p className="text-xl text-gray-600">Professional marketing tools to help sell your home faster</p>
         </div>
 
-        {/* Tool Navigation */}
+        {/* Tool Selection */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
-          <button
-            onClick={() => setActiveMarketingTool('ai-writer')}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-              activeMarketingTool === 'ai-writer'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-blue-50'
-            }`}
-          >
-            <Edit3 className="w-5 h-5 inline mr-2" />
-            AI Listing Writer
-          </button>
-          <button
-            onClick={() => setActiveMarketingTool('photography')}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-              activeMarketingTool === 'photography'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-blue-50'
-            }`}
-          >
-            <Camera className="w-5 h-5 inline mr-2" />
-            Photography Guide
-          </button>
-          <button
-            onClick={() => setActiveMarketingTool('social-media')}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-              activeMarketingTool === 'social-media'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-blue-50'
-            }`}
-          >
-            <Share2 className="w-5 h-5 inline mr-2" />
-            Social Media
-          </button>
-          <button
-            onClick={() => setActiveMarketingTool('flyers')}
-            className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-              activeMarketingTool === 'flyers'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-blue-50'
-            }`}
-          >
-            <Printer className="w-5 h-5 inline mr-2" />
-            Flyer Builder
-          </button>
+          {[
+            { id: 'ai-writer', name: 'AI Listing Writer', icon: <PenTool className="w-5 h-5" /> },
+            { id: 'photography', name: 'Photography Guide', icon: <Camera className="w-5 h-5" /> },
+            { id: 'social-media', name: 'Social Media', icon: <Share2 className="w-5 h-5" /> },
+            { id: 'flyers', name: 'Flyer Builder', icon: <FileText className="w-5 h-5" /> }
+          ].map((tool) => (
+            <button
+              key={tool.id}
+              onClick={() => setSelectedMarketingTool(tool.id)}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                selectedMarketingTool === tool.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }`}
+            >
+              {tool.icon}
+              <span>{tool.name}</span>
+            </button>
+          ))}
         </div>
 
         {/* AI Listing Writer */}
-        {activeMarketingTool === 'ai-writer' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">AI Listing Writer</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Chat Interface */}
-              <div className="space-y-4">
-                <div className="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto">
-                  {chatMessages.length === 0 ? (
-                    <div className="text-center text-gray-500 mt-20">
-                      <Edit3 className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                      <p>Start a conversation to generate your listing description</p>
-                      <p className="text-sm mt-2">Try: "Write a description for my 3BR/2BA home with updated kitchen"</p>
-                    </div>
+        {selectedMarketingTool === 'ai-writer' && (
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="bg-blue-100 p-3 rounded-full">
+                <PenTool className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">AI Listing Writer</h2>
+                <p className="text-gray-600">Generate compelling property descriptions with AI</p>
+              </div>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Describe your property
+                </label>
+                <textarea
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  placeholder="Tell me about your property: bedrooms, bathrooms, special features, location, recent updates, etc."
+                  rows={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <button
+                  onClick={generateAIContent}
+                  disabled={isGenerating || !aiPrompt.trim()}
+                  className="mt-4 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center space-x-2"
+                >
+                  {isGenerating ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Generating...</span>
+                    </>
                   ) : (
-                    <div className="space-y-4">
-                      {chatMessages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div
-                            className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                              message.isUser
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 text-gray-900'
-                            }`}
-                          >
-                            <p className="text-sm">{message.text}</p>
-                            <p className="text-xs mt-1 opacity-70">
-                              {message.timestamp.toLocaleTimeString()}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                      {isTyping && (
-                        <div className="flex justify-start">
-                          <div className="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg">
-                            <div className="flex space-x-1">
-                              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <>
+                      <Lightbulb className="w-4 h-4" />
+                      <span>Generate Description</span>
+                    </>
                   )}
-                </div>
-                
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && sendChatMessage()}
-                    placeholder="Describe your property or ask for help..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <button
-                    onClick={sendChatMessage}
-                    disabled={!chatInput.trim() || isTyping}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <Send className="w-5 h-5" />
-                  </button>
-                </div>
+                </button>
               </div>
 
-              {/* Tips and Examples */}
-              <div className="space-y-6">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-blue-900 mb-2">Quick Tips</h3>
-                  <ul className="text-sm text-blue-800 space-y-1">
-                    <li>• Include key features like bedrooms, bathrooms, square footage</li>
-                    <li>• Mention recent updates or renovations</li>
-                    <li>• Highlight neighborhood amenities</li>
-                    <li>• Use descriptive words that create emotion</li>
-                  </ul>
-                </div>
-
-                <div className="bg-green-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-green-900 mb-2">Example Prompts</h3>
-                  <div className="space-y-2 text-sm">
-                    <button className="block w-full text-left p-2 bg-white rounded border hover:bg-gray-50 transition-colors">
-                      "Write a description for my 4BR colonial with updated kitchen"
-                    </button>
-                    <button className="block w-full text-left p-2 bg-white rounded border hover:bg-gray-50 transition-colors">
-                      "Create a listing for my downtown condo with city views"
-                    </button>
-                    <button className="block w-full text-left p-2 bg-white rounded border hover:bg-gray-50 transition-colors">
-                      "Help me highlight my home's outdoor features"
-                    </button>
-                  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Generated Description
+                </label>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 min-h-[200px]">
+                  {aiResponse ? (
+                    <div>
+                      <p className="text-gray-800 leading-relaxed">{aiResponse}</p>
+                      <div className="mt-4 flex space-x-2">
+                        <button
+                          onClick={() => navigator.clipboard.writeText(aiResponse)}
+                          className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700 transition-colors flex items-center space-x-1"
+                        >
+                          <Copy className="w-4 h-4" />
+                          <span>Copy</span>
+                        </button>
+                        <button
+                          onClick={generateAIContent}
+                          className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors flex items-center space-x-1"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          <span>Regenerate</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 italic">Your AI-generated description will appear here...</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -1235,88 +1130,55 @@ function App() {
         )}
 
         {/* Photography Guide */}
-        {activeMarketingTool === 'photography' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Photography Guide</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Essential Tips</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold text-sm">1</span>
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Use Natural Light</h4>
-                      <p className="text-gray-600 text-sm">Shoot during golden hour or open all curtains and blinds for bright, natural lighting.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold text-sm">2</span>
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Declutter Every Room</h4>
-                      <p className="text-gray-600 text-sm">Remove personal items, excess furniture, and clutter to make spaces look larger.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold text-sm">3</span>
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Shoot from Corners</h4>
-                      <p className="text-gray-600 text-sm">Position yourself in room corners to capture the maximum amount of space.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-semibold text-sm">4</span>
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Keep Camera Level</h4>
-                      <p className="text-gray-600 text-sm">Use your phone's grid lines to ensure straight, professional-looking photos.</p>
-                    </div>
-                  </div>
-                </div>
+        {selectedMarketingTool === 'photography' && (
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="bg-purple-100 p-3 rounded-full">
+                <Camera className="w-6 h-6 text-purple-600" />
               </div>
-
               <div>
-                <h3 className="text-xl font-semibold mb-4">Shot Checklist</h3>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="space-y-3">
-                    {[
-                      'Front exterior with curb appeal',
-                      'Back yard and outdoor spaces',
-                      'Living room from multiple angles',
-                      'Kitchen with all appliances visible',
-                      'Master bedroom',
-                      'Master bathroom',
-                      'Additional bedrooms',
-                      'Dining room or eating area',
-                      'Unique features (fireplace, built-ins)',
-                      'Garage or parking area'
-                    ].map((item, index) => (
-                      <label key={index} className="flex items-center space-x-3">
-                        <input type="checkbox" className="h-4 w-4 text-blue-600 rounded" />
-                        <span className="text-sm text-gray-700">{item}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Photography Guide</h2>
+                <p className="text-gray-600">Professional tips for stunning property photos</p>
               </div>
             </div>
 
-            <div className="mt-8 p-4 bg-yellow-50 rounded-lg">
-              <div className="flex items-start space-x-3">
-                <Lightbulb className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-yellow-900">Pro Tip</h4>
-                  <p className="text-yellow-800 text-sm">Take 2-3 shots of each room from different angles. You can always delete extras, but you can't recreate the perfect lighting conditions.</p>
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Essential Shots Checklist</h3>
+                <div className="space-y-3">
+                  {[
+                    'Front exterior with curb appeal',
+                    'Back yard and outdoor spaces',
+                    'Living room from multiple angles',
+                    'Kitchen with all appliances visible',
+                    'All bedrooms and bathrooms',
+                    'Dining room or eating area',
+                    'Special features (fireplace, built-ins)',
+                    'Garage and storage areas'
+                  ].map((shot, index) => (
+                    <div key={index} className="flex items-center space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span className="text-gray-700">{shot}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Pro Photography Tips</h3>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-blue-900 mb-2">Lighting</h4>
+                    <p className="text-blue-800 text-sm">Shoot during golden hour or use bright, natural light. Turn on all lights and open curtains.</p>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-green-900 mb-2">Staging</h4>
+                    <p className="text-green-800 text-sm">Declutter completely, add fresh flowers, and arrange furniture to show space and flow.</p>
+                  </div>
+                  <div className="bg-purple-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-purple-900 mb-2">Angles</h4>
+                    <p className="text-purple-800 text-sm">Shoot from corners to show room size, keep camera level, and capture unique features.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1324,60 +1186,56 @@ function App() {
         )}
 
         {/* Social Media Marketing */}
-        {activeMarketingTool === 'social-media' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Social Media Marketing</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h3 className="font-semibold text-blue-900 mb-3">Facebook</h3>
+        {selectedMarketingTool === 'social-media' && (
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="bg-pink-100 p-3 rounded-full">
+                <Share2 className="w-6 h-6 text-pink-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Social Media Marketing</h2>
+                <p className="text-gray-600">Leverage social platforms to reach more buyers</p>
+              </div>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="bg-blue-50 p-6 rounded-xl">
+                <h3 className="text-lg font-semibold text-blue-900 mb-3">Facebook</h3>
                 <ul className="text-sm text-blue-800 space-y-2">
                   <li>• Post in local community groups</li>
                   <li>• Share in neighborhood pages</li>
                   <li>• Use Facebook Marketplace</li>
                   <li>• Create event for open house</li>
-                  <li>• Boost posts to local audience</li>
                 </ul>
               </div>
-
-              <div className="bg-pink-50 rounded-lg p-4">
-                <h3 className="font-semibold text-pink-900 mb-3">Instagram</h3>
+              <div className="bg-pink-50 p-6 rounded-xl">
+                <h3 className="text-lg font-semibold text-pink-900 mb-3">Instagram</h3>
                 <ul className="text-sm text-pink-800 space-y-2">
+                  <li>• Post high-quality photos</li>
                   <li>• Use local hashtags</li>
-                  <li>• Post Stories with polls</li>
-                  <li>• Share before/after photos</li>
-                  <li>• Tag your location</li>
-                  <li>• Partner with local influencers</li>
+                  <li>• Share Instagram Stories</li>
+                  <li>• Tag location and features</li>
                 </ul>
               </div>
-
-              <div className="bg-green-50 rounded-lg p-4">
-                <h3 className="font-semibold text-green-900 mb-3">Nextdoor</h3>
+              <div className="bg-green-50 p-6 rounded-xl">
+                <h3 className="text-lg font-semibold text-green-900 mb-3">Nextdoor</h3>
                 <ul className="text-sm text-green-800 space-y-2">
-                  <li>• Post in For Sale section</li>
-                  <li>• Share in General discussions</li>
+                  <li>• Post in neighborhood feed</li>
+                  <li>• Share in For Sale section</li>
                   <li>• Ask neighbors to share</li>
-                  <li>• Highlight neighborhood benefits</li>
-                  <li>• Respond to comments quickly</li>
+                  <li>• Highlight local features</li>
                 </ul>
               </div>
             </div>
 
-            <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">Sample Posts</h3>
+            <div className="mt-8 bg-gray-50 p-6 rounded-xl">
+              <h3 className="text-lg font-semibold mb-4">Sample Social Media Posts</h3>
               <div className="space-y-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium mb-2">Facebook Post Template</h4>
-                  <p className="text-sm text-gray-700 italic">
-                    "🏡 OPEN HOUSE THIS WEEKEND! Beautiful 3BR/2BA home in [Neighborhood] featuring updated kitchen, hardwood floors, and large backyard. Perfect for families! Saturday 1-4pm. DM for details. #OpenHouse #[YourCity]RealEstate #FSBO"
-                  </p>
+                <div className="bg-white p-4 rounded-lg border-l-4 border-blue-500">
+                  <p className="text-gray-800 italic">"🏡 Beautiful 3BR/2BA home for sale in [Neighborhood]! Features updated kitchen, hardwood floors, and large backyard. Perfect for families! $XXX,XXX. DM for details. #ForSale #[YourCity] #DreamHome"</p>
                 </div>
-                
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-medium mb-2">Instagram Caption</h4>
-                  <p className="text-sm text-gray-700 italic">
-                    "✨ Just listed! This stunning home won't last long. Swipe to see the gorgeous kitchen renovation and that backyard oasis! 📍 [Neighborhood] 💰 $XXX,XXX #JustListed #DreamHome #[YourCity] #FSBO #RealEstate"
-                  </p>
+                <div className="bg-white p-4 rounded-lg border-l-4 border-green-500">
+                  <p className="text-gray-800 italic">"Open House this Saturday 1-4pm! Come see this stunning home with [key features]. Located in quiet neighborhood near [local amenities]. See you there! 📍[Address]"</p>
                 </div>
               </div>
             </div>
@@ -1385,41 +1243,45 @@ function App() {
         )}
 
         {/* Flyer Builder */}
-        {activeMarketingTool === 'flyers' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Flyer Builder</h2>
-            
+        {selectedMarketingTool === 'flyers' && (
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="bg-orange-100 p-3 rounded-full">
+                <FileText className="w-6 h-6 text-orange-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Flyer Builder</h2>
+                <p className="text-gray-600">Create professional property flyers</p>
+              </div>
+            </div>
+
             <div className="text-center py-12">
-              <Printer className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <div className="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Wrench className="w-12 h-12 text-gray-400" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Coming Soon!</h3>
-              <p className="text-gray-600 mb-6">
-                Our drag-and-drop flyer builder is currently in development. 
-                In the meantime, here are some tips for creating effective flyers:
-              </p>
+              <p className="text-gray-600 mb-6">Our flyer builder tool is currently in development. In the meantime, here are some design tips:</p>
               
-              <div className="max-w-2xl mx-auto text-left">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold mb-3">Essential Elements</h4>
-                    <ul className="text-sm space-y-1 text-gray-600">
-                      <li>• High-quality main photo</li>
-                      <li>• Property address</li>
-                      <li>• Price and key details</li>
-                      <li>• Your contact information</li>
-                      <li>• QR code for virtual tour</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-3">Design Tips</h4>
-                    <ul className="text-sm space-y-1 text-gray-600">
-                      <li>• Use high contrast colors</li>
-                      <li>• Keep text large and readable</li>
-                      <li>• Include tear-off tabs with info</li>
-                      <li>• Use professional fonts</li>
-                      <li>• Leave plenty of white space</li>
-                    </ul>
-                  </div>
+              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto text-left">
+                <div className="bg-blue-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-blue-900 mb-3">Essential Elements</h4>
+                  <ul className="text-blue-800 space-y-1 text-sm">
+                    <li>• High-quality main photo</li>
+                    <li>• Property address and price</li>
+                    <li>• Key features and room count</li>
+                    <li>• Your contact information</li>
+                    <li>• QR code for online listing</li>
+                  </ul>
+                </div>
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-green-900 mb-3">Design Tips</h4>
+                  <ul className="text-green-800 space-y-1 text-sm">
+                    <li>• Use clean, readable fonts</li>
+                    <li>• Include 3-4 best photos</li>
+                    <li>• Keep text concise and clear</li>
+                    <li>• Use consistent colors</li>
+                    <li>• Print on quality paper</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -1430,38 +1292,32 @@ function App() {
   );
 
   const renderFAQ = () => (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Frequently Asked Questions
-          </h1>
-          <p className="mt-4 text-xl text-gray-600">
-            Get answers to common questions about selling your home without an agent
-          </p>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
+          <p className="text-xl text-gray-600">Get answers to common questions about selling your home</p>
         </div>
 
         {/* Category Filter */}
-        <div className="mb-8">
-          <div className="flex flex-wrap justify-center gap-2">
-            {faqCategories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedFAQCategory(category.id)}
-                className={`flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedFAQCategory === category.id
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 hover:bg-blue-50'
-                }`}
-              >
-                {category.icon}
-                <span className="ml-2">{category.name}</span>
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {faqCategories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setSelectedFAQCategory(category.id)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                selectedFAQCategory === category.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+              }`}
+            >
+              {category.icon}
+              <span>{category.name}</span>
+            </button>
+          ))}
         </div>
 
-        {/* FAQ List */}
+        {/* FAQ Items */}
         <div className="space-y-4">
           {filteredFAQs.map((faq, index) => (
             <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -1471,9 +1327,9 @@ function App() {
               >
                 <span className="font-medium text-gray-900">{faq.question}</span>
                 {expandedFAQ === index ? (
-                  <ChevronUp className="h-5 w-5 text-gray-500" />
+                  <ChevronUp className="w-5 h-5 text-gray-500" />
                 ) : (
-                  <ChevronDown className="h-5 w-5 text-gray-500" />
+                  <ChevronDown className="w-5 h-5 text-gray-500" />
                 )}
               </button>
               {expandedFAQ === index && (
@@ -1485,215 +1341,162 @@ function App() {
           ))}
         </div>
 
-        {filteredFAQs.length === 0 && (
-          <div className="text-center py-12">
-            <HelpCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No questions found in this category.</p>
-          </div>
-        )}
+        {/* Contact CTA */}
+        <div className="mt-12 bg-blue-600 text-white rounded-2xl p-8 text-center">
+          <h2 className="text-2xl font-bold mb-4">Still Have Questions?</h2>
+          <p className="text-blue-100 mb-6">Our expert team is here to help you through every step of the process</p>
+          <button
+            onClick={() => setShowSection('contact')}
+            className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          >
+            Contact Support
+          </button>
+        </div>
       </div>
     </div>
   );
 
-  const renderContactSupport = () => (
-    <div className="min-h-screen bg-gray-50 py-8">
+  const renderContact = () => (
+    <div className="min-h-screen bg-gray-50 py-16">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Contact & Support
-          </h1>
-          <p className="mt-4 text-xl text-gray-600">
-            Get the help you need to successfully sell your home
-          </p>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact & Support</h1>
+          <p className="text-xl text-gray-600">We're here to help you succeed in selling your home</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Email Support */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Email Support</h3>
-              <p className="text-gray-600 mb-4">
-                Get detailed answers to your questions via email. We typically respond within 24 hours.
-              </p>
-              <div className="space-y-3">
-                <p className="text-sm text-gray-500">
-                  <strong>Response Time:</strong> 24 hours
-                </p>
-                <p className="text-sm text-gray-500">
-                  <strong>Best For:</strong> Detailed questions, document reviews
-                </p>
-                <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">
-                  Send Email
-                </button>
-              </div>
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8 text-blue-600" />
             </div>
+            <h3 className="text-xl font-semibold mb-3">Email Support</h3>
+            <p className="text-gray-600 mb-4">Get detailed answers to your questions</p>
+            <div className="text-sm text-gray-500 mb-4">
+              Response time: Within 24 hours
+            </div>
+            <a
+              href="mailto:support@sellmyhome.com"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors inline-block"
+            >
+              Email Us
+            </a>
           </div>
 
           {/* Live Chat */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Live Chat</h3>
-              <p className="text-gray-600 mb-4">
-                Chat with our support team in real-time for quick answers and guidance.
-              </p>
-              <div className="space-y-3">
-                <p className="text-sm text-gray-500">
-                  <strong>Hours:</strong> Mon-Fri 9AM-6PM EST
-                </p>
-                <p className="text-sm text-gray-500">
-                  <strong>Best For:</strong> Quick questions, immediate help
-                </p>
-                <button className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors">
-                  Start Chat
-                </button>
-              </div>
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="w-8 h-8 text-green-600" />
             </div>
+            <h3 className="text-xl font-semibold mb-3">Live Chat</h3>
+            <p className="text-gray-600 mb-4">Chat with our support team in real-time</p>
+            <div className="text-sm text-gray-500 mb-4">
+              Available: Mon-Fri 9AM-6PM EST
+            </div>
+            <button className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+              Start Chat
+            </button>
           </div>
 
           {/* Phone Consultation */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Phone className="w-8 h-8 text-purple-600" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">Phone Consultation</h3>
+            <p className="text-gray-600 mb-4">One-on-one guidance from our experts</p>
+            <div className="text-sm text-gray-500 mb-2">
+              30-minute consultation: $99
+            </div>
+            <div className="text-xs text-gray-400 mb-4">
+              (Refunded if you list with us)
+            </div>
+            <button className="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors">
+              Schedule Call
+            </button>
+          </div>
+        </div>
+
+        {/* Additional Resources */}
+        <div className="mt-12 bg-white rounded-2xl shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Additional Resources</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="w-8 h-8 text-purple-600" />
+              <div className="bg-orange-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <BookOpen className="w-6 h-6 text-orange-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Phone Consultation</h3>
-              <p className="text-gray-600 mb-4">
-                Schedule a one-on-one consultation with a real estate expert.
-              </p>
-              <div className="space-y-3">
-                <p className="text-sm text-gray-500">
-                  <strong>Duration:</strong> 30-60 minutes
-                </p>
-                <p className="text-sm text-gray-500">
-                  <strong>Fee:</strong> $99 (credited toward services)
-                </p>
-                <button className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
-                  Schedule Call
-                </button>
+              <h3 className="font-semibold mb-2">Knowledge Base</h3>
+              <p className="text-sm text-gray-600">Comprehensive guides and articles</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-red-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Video className="w-6 h-6 text-red-600" />
               </div>
+              <h3 className="font-semibold mb-2">Video Tutorials</h3>
+              <p className="text-sm text-gray-600">Step-by-step video guides</p>
+            </div>
+            <div className="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="w-6 h-6 text-yellow-600" />
+            </div>
+            <div className="text-center">
+              <h3 className="font-semibold mb-2">Community Forum</h3>
+              <p className="text-sm text-gray-600">Connect with other sellers</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <AlertTriangle className="w-6 h-6 text-indigo-600" />
+              </div>
+              <h3 className="font-semibold mb-2">Emergency Support</h3>
+              <p className="text-sm text-gray-600">Urgent issues during closing</p>
             </div>
           </div>
         </div>
 
-        {/* Support Topics */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">What We Can Help With</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-lg p-6 text-center">
-              <DollarSign className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">Pricing Strategy</h3>
-              <p className="text-sm text-gray-600">Market analysis and competitive pricing guidance</p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 text-center">
-              <FileText className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">Legal Documents</h3>
-              <p className="text-sm text-gray-600">Contract review and legal requirement guidance</p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 text-center">
-              <Megaphone className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">Marketing Strategy</h3>
-              <p className="text-sm text-gray-600">Listing optimization and promotion tactics</p>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 text-center">
-              <HandHeart className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-2">Negotiation Help</h3>
-              <p className="text-sm text-gray-600">Offer evaluation and negotiation strategies</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Knowledge Base */}
-        <div className="mt-12 bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">Knowledge Base</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Contact Form */}
+        <div className="mt-12 bg-white rounded-2xl shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
+          <form className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Popular Articles</h3>
-              <ul className="space-y-3">
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Complete Guide to FSBO Selling
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → How to Price Your Home Competitively
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Legal Requirements by State
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Photography Tips for Better Listings
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Negotiating with Buyer's Agents
-                  </a>
-                </li>
-              </ul>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Your name"
+              />
             </div>
-
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Video Tutorials</h3>
-              <ul className="space-y-3">
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Setting Up Your First Listing
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Conducting Safe Home Showings
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Understanding Purchase Contracts
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Closing Process Walkthrough
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-600 hover:text-blue-800 text-sm">
-                    → Marketing Your Home on Social Media
-                  </a>
-                </li>
-              </ul>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="your.email@example.com"
+              />
             </div>
-          </div>
-        </div>
-
-        {/* Emergency Contact */}
-        <div className="mt-8 bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-start space-x-3">
-            <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-semibold text-red-900">Need Immediate Help?</h3>
-              <p className="text-red-800 text-sm mt-1">
-                If you're facing an urgent situation with your home sale (contract disputes, closing issues, etc.), 
-                call our emergency line: <strong>(555) 123-HELP</strong>
-              </p>
-              <p className="text-red-700 text-xs mt-2">
-                Available 24/7 for active listings with urgent issues
-              </p>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+              <input
+                type="text"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="How can we help?"
+              />
             </div>
-          </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+              <textarea
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Tell us about your question or concern..."
+              />
+            </div>
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                Send Message
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -1703,11 +1506,12 @@ function App() {
     <div className="min-h-screen bg-gray-50">
       {renderNavigation()}
       
-      {showSection === 'home' && renderHomePage()}
-      {showSection === 'questionnaire' && renderQuestionnaire()}
-      {showSection === 'marketing' && renderMarketingHub()}
+      {showSection === 'home' && renderHome()}
+      {showSection === 'how-it-works' && renderHowItWorks()}
+      {showSection === 'list-property' && renderPropertyListing()}
+      {showSection === 'marketing' && renderMarketingTools()}
       {showSection === 'faq' && renderFAQ()}
-      {showSection === 'contact' && renderContactSupport()}
+      {showSection === 'contact' && renderContact()}
     </div>
   );
 }
