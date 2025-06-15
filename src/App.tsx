@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, Calculator, Camera, Download, FileText, Share2, Edit3, Printer, MessageSquare, Video, Image, Zap, Target, PenTool, Layout } from 'lucide-react';
+import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, Scale, FileText, Wrench, Megaphone, HelpCircle, ChevronDown, ChevronUp, Users, HandHeart, AlertTriangle, Calculator, Clock, Phone } from 'lucide-react';
 
 interface FormData {
   financingType: string;
@@ -17,8 +17,17 @@ interface FormData {
   phone: string;
 }
 
+interface FAQItem {
+  question: string;
+  answer: string;
+  category: string;
+}
+
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [showSection, setShowSection] = useState<string>('questionnaire');
+  const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+  const [selectedFAQCategory, setSelectedFAQCategory] = useState<string>('all');
   const [formData, setFormData] = useState<FormData>({
     financingType: '',
     timeline: '',
@@ -35,31 +44,6 @@ function App() {
     phone: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showToolsServices, setShowToolsServices] = useState(false);
-  const [showMarketingHub, setShowMarketingHub] = useState(false);
-  const [propertyAddress, setPropertyAddress] = useState('');
-  const [estimatedValue, setEstimatedValue] = useState<number | null>(null);
-  const [listingDetails, setListingDetails] = useState({
-    address: '',
-    bedrooms: '',
-    bathrooms: '',
-    sqft: '',
-    price: '',
-    features: '',
-    neighborhood: ''
-  });
-  const [generatedListing, setGeneratedListing] = useState('');
-  const [flyerData, setFlyerData] = useState({
-    address: '',
-    price: '',
-    bedrooms: '',
-    bathrooms: '',
-    sqft: '',
-    features: '',
-    agentName: '',
-    agentPhone: '',
-    agentEmail: ''
-  });
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -78,46 +62,188 @@ function App() {
   };
 
   const handleSubmit = async () => {
-    // In a real application, you would send this data to your backend
-    // For now, we'll simulate the submission
     console.log('Form submitted:', formData);
     setIsSubmitted(true);
   };
 
-  const calculateHomeValue = () => {
-    if (!propertyAddress) return;
-    
-    // Simulate home value calculation
-    const baseValue = Math.floor(Math.random() * 500000) + 300000;
-    const adjustedValue = baseValue + (Math.floor(Math.random() * 100000) - 50000);
-    setEstimatedValue(adjustedValue);
-  };
+  const faqData: FAQItem[] = [
+    // Buyer Agent Concerns
+    {
+      question: "What if a buyer contacts me but they already have their own real estate agent?",
+      answer: "This is completely normal and happens frequently! When a buyer has their own agent, you'll work with both the buyer and their agent in what's called a 'dual agency' or 'cooperative' transaction. The buyer's agent represents their interests, while you focus on getting the best deal for your property. Both agents typically split the commission (usually 2.5-3% each from the total 5-6% commission). You'll still save money compared to hiring a listing agent, and the transaction proceeds smoothly with professional representation on both sides.",
+      category: "agents"
+    },
+    {
+      question: "Do I have to pay the buyer's agent commission?",
+      answer: "Yes, as the seller, you typically pay both the listing agent commission (if you have one) and the buyer's agent commission. This is standard practice and is usually built into your asking price. The total commission is typically 5-6% of the sale price, split between both agents. However, since you're selling FSBO, you only pay the buyer's agent (usually 2.5-3%), saving you the listing agent's portion.",
+      category: "agents"
+    },
+    {
+      question: "What if multiple buyers want my property and they all have different agents?",
+      answer: "This is a great problem to have! When you receive multiple offers, you can choose the best one based on price, terms, financing strength, and closing timeline - regardless of which agents are involved. Each buyer's agent will submit their client's offer independently. You evaluate all offers and accept the one that works best for you. The winning buyer's agent gets the commission, and the others don't.",
+      category: "agents"
+    },
+    {
+      question: "Can I refuse to work with certain real estate agents?",
+      answer: "While you have the right to choose who you work with, refusing to work with licensed agents without valid reasons could limit your buyer pool and potentially raise fair housing concerns. It's generally better to focus on the quality of the offer rather than the agent. However, if you've had negative experiences with a specific agent or they've been unprofessional, you can decline to work with them.",
+      category: "agents"
+    },
+    {
+      question: "What if an agent brings me a buyer but wants a higher commission?",
+      answer: "Commission rates are negotiable, but be consistent with what you advertise. If you've stated 2.5% buyer's agent commission, stick to it unless the agent brings exceptional value (like a cash buyer or quick close). Some agents may try to negotiate higher rates, but you're not obligated to pay more than market rate. Having a clear commission policy upfront prevents these situations.",
+      category: "agents"
+    },
 
-  const generateListing = () => {
-    if (!listingDetails.address || !listingDetails.bedrooms || !listingDetails.bathrooms) return;
-    
-    // Simulate AI-generated listing description
-    const templates = [
-      `Welcome to this stunning ${listingDetails.bedrooms}-bedroom, ${listingDetails.bathrooms}-bathroom home located in the desirable ${listingDetails.neighborhood || 'neighborhood'}. This beautiful property offers ${listingDetails.sqft} square feet of comfortable living space, featuring ${listingDetails.features || 'modern amenities and thoughtful design'}. 
+    // Legal & Documentation
+    {
+      question: "What legal documents do I need to sell my home myself?",
+      answer: "Key documents include: Purchase Agreement/Contract, Property Disclosure Statement, Lead Paint Disclosure (for homes built before 1978), Title Documents, Deed, Settlement Statement (HUD-1), and any local/state required disclosures. Many of these can be obtained from your state's real estate commission website or through legal document services. Consider having a real estate attorney review important documents.",
+      category: "legal"
+    },
+    {
+      question: "Do I need a lawyer to sell FSBO?",
+      answer: "While not always legally required, it's highly recommended to have a real estate attorney review your contracts and handle the closing process. Legal requirements vary by state - some states require attorney involvement while others don't. An attorney can help ensure all documents are properly prepared, review offers, and handle the closing process, typically costing $500-$1,500 but potentially saving you thousands in mistakes.",
+      category: "legal"
+    },
+    {
+      question: "What disclosures am I required to make to buyers?",
+      answer: "Disclosure requirements vary by state but typically include: known structural issues, water damage, pest problems, environmental hazards, neighborhood nuisances, recent repairs or renovations, and any material facts that could affect the property's value. Always err on the side of over-disclosure to protect yourself legally. Check your state's specific requirements as failure to disclose can result in lawsuits.",
+      category: "legal"
+    },
+    {
+      question: "What happens if the buyer wants to back out after signing a contract?",
+      answer: "Buyers can typically back out during contingency periods (inspection, financing, appraisal) without penalty. If they back out after contingencies are removed without valid reason, they may forfeit their earnest money deposit. Your contract should clearly outline contingency periods, deadlines, and consequences for backing out. Having a well-written contract with proper contingencies protects both parties.",
+      category: "legal"
+    },
+    {
+      question: "What if I'm sued after the sale for not disclosing something?",
+      answer: "This is why proper disclosure is crucial. If you're sued for non-disclosure, having documentation that you disclosed all known issues is your best defense. Keep records of all disclosures, communications, and any repairs or inspections. Consider purchasing seller's insurance or having an attorney review your disclosures before listing. Most issues can be avoided with thorough, honest disclosure upfront.",
+      category: "legal"
+    },
 
-Priced at $${listingDetails.price}, this home presents an exceptional opportunity for buyers seeking quality and value. The open floor plan creates a seamless flow between living spaces, perfect for both daily living and entertaining.
+    // Pricing & Market
+    {
+      question: "How do I price my home competitively without an agent's market analysis?",
+      answer: "Research comparable sales (comps) in your area from the last 3-6 months using online tools like Zillow, Realtor.com, or your county assessor's website. Look for homes with similar square footage, bedrooms/bathrooms, lot size, and condition within a 1-mile radius. Consider getting a professional appraisal ($300-$500) or hiring a real estate agent for a one-time consultation ($200-$500) to provide a Comparative Market Analysis (CMA).",
+      category: "pricing"
+    },
+    {
+      question: "Should I price my home higher to leave room for negotiation?",
+      answer: "Pricing slightly above market value (5-10%) can work in a seller's market, but overpricing can backfire by deterring buyers and causing your home to sit on the market longer. Homes that sit too long often sell for less than properly priced homes. In today's market with online price transparency, buyers are well-informed about values. Price competitively from the start to generate interest and potentially multiple offers.",
+      category: "pricing"
+    },
+    {
+      question: "What if my home doesn't appraise for the sale price?",
+      answer: "If the appraisal comes in low, you have several options: 1) Lower the sale price to match the appraisal, 2) Meet the buyer halfway, 3) Ask the buyer to pay the difference in cash, 4) Challenge the appraisal with additional comps, or 5) Cancel the sale if terms can't be agreed upon. Most purchase contracts include an appraisal contingency that allows buyers to back out or renegotiate if the home doesn't appraise.",
+      category: "pricing"
+    },
+    {
+      question: "How do I handle multiple offers on my property?",
+      answer: "Multiple offers are great! Review each offer carefully considering: purchase price, down payment amount, financing type (cash is strongest), closing timeline, contingencies, and buyer qualifications. You can accept the best offer, counter multiple offers, or ask for 'highest and best' final offers. Don't just go with the highest price - consider the overall strength and likelihood of closing.",
+      category: "pricing"
+    },
 
-Don't miss this opportunity to own a piece of paradise in one of the area's most sought-after locations. Schedule your showing today!`,
-      
-      `Discover your dream home at ${listingDetails.address}! This exceptional ${listingDetails.bedrooms}BR/${listingDetails.bathrooms}BA residence offers the perfect blend of comfort and style in ${listingDetails.sqft} square feet of beautifully designed living space.
+    // Process & Timeline
+    {
+      question: "How long does the FSBO selling process typically take?",
+      answer: "The timeline varies but typically: Preparation and marketing (1-2 weeks), Finding a buyer (30-90 days depending on market conditions), Contract to closing (30-45 days). Total process usually takes 2-4 months. Factors affecting timeline include pricing, market conditions, home condition, financing type, and how quickly you respond to inquiries and showings.",
+      category: "process"
+    },
+    {
+      question: "What happens during the home inspection, and what if issues are found?",
+      answer: "The buyer typically has 7-10 days to complete inspections after contract acceptance. If issues are found, buyers can: 1) Request repairs, 2) Ask for credits toward closing costs, 3) Renegotiate the price, or 4) Cancel the contract. You can agree to requests, counter-offer, or refuse and risk the buyer walking away. Major issues should be addressed, but don't feel obligated to fix every minor item.",
+      category: "process"
+    },
+    {
+      question: "Do I need to be present for showings and open houses?",
+      answer: "It's generally better if you're not present during showings, as buyers feel more comfortable discussing the property freely. You can step out during scheduled showings or have a trusted friend/family member handle them. For open houses, consider having someone else host while you're away. If you must be present, stay in the background and let visitors explore freely.",
+      category: "process"
+    },
+    {
+      question: "What if no one is interested in my home after several weeks?",
+      answer: "If your home isn't getting interest after 2-4 weeks, consider: 1) Reducing the price (most common issue), 2) Improving marketing photos and descriptions, 3) Increasing marketing efforts, 4) Making minor improvements or staging changes, 5) Reviewing feedback from showings, or 6) Consulting with a real estate professional. Price is usually the primary factor in lack of interest.",
+      category: "process"
+    },
 
-Key Features:
-• ${listingDetails.bedrooms} spacious bedrooms
-• ${listingDetails.bathrooms} well-appointed bathrooms  
-• ${listingDetails.sqft} sq ft of living space
-• ${listingDetails.features || 'Premium finishes throughout'}
-• Prime location in ${listingDetails.neighborhood || 'desirable area'}
+    // Financial & Costs
+    {
+      question: "What costs should I expect when selling FSBO?",
+      answer: "Typical FSBO costs include: Buyer's agent commission (2.5-3%), Title insurance and escrow fees (1-2%), Transfer taxes and recording fees (varies by location), Attorney fees ($500-$1,500), Home inspection repairs (varies), Staging and marketing costs ($500-$2,000), and Closing costs ($1,000-$3,000). Total costs typically range from 6-10% of sale price, compared to 8-12% with a listing agent.",
+      category: "financial"
+    },
+    {
+      question: "Can I negotiate the buyer's agent commission?",
+      answer: "Yes, commission rates are negotiable, but be careful not to set them too low as it might discourage agents from showing your property to their clients. Standard buyer's agent commission is 2.5-3%. Offering slightly below market rate might work in a hot seller's market, but in a balanced or buyer's market, competitive commission rates help ensure maximum exposure to potential buyers.",
+      category: "financial"
+    },
+    {
+      question: "What if the buyer's financing falls through?",
+      answer: "If financing falls through during the contingency period, the buyer can typically cancel without penalty and get their earnest money back. To minimize this risk: 1) Require pre-approval letters, 2) Ask about down payment source, 3) Consider backup offers, 4) Include strong financing contingency language, and 5) Stay in communication with the buyer's lender. Having a backup offer can help if the primary deal falls through.",
+      category: "financial"
+    },
+    {
+      question: "Should I accept a cash offer over a financed offer?",
+      answer: "Cash offers are generally stronger because they: close faster (2-3 weeks vs 30-45 days), have no financing contingency risk, often waive appraisal contingencies, and provide more certainty. However, don't automatically accept a lower cash offer - evaluate the total package. A well-qualified financed buyer with a strong pre-approval might be worth considering if their offer is significantly higher.",
+      category: "financial"
+    },
 
-Listed at $${listingDetails.price}, this home won't last long in today's market. Contact us today to schedule your private showing!`
-    ];
-    
-    const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
-    setGeneratedListing(randomTemplate);
+    // Marketing & Exposure
+    {
+      question: "How do I get maximum exposure for my FSBO listing?",
+      answer: "Maximize exposure through: Online listings on FSBO websites, Social media marketing, Yard signs and directional signs, Flyers and brochures, Word-of-mouth networking, Local newspaper ads, Craigslist and Facebook Marketplace, Open houses, and Consider paying for MLS access through flat-fee services. Professional photos and virtual tours significantly increase online engagement and showing requests.",
+      category: "marketing"
+    },
+    {
+      question: "Should I consider paying for MLS access?",
+      answer: "Yes, MLS access can significantly increase your exposure since most buyers' agents search the MLS first. Flat-fee MLS services typically cost $100-$500 and get your listing on major real estate websites like Realtor.com and Zillow. This gives you the same online exposure as agent-listed properties while maintaining control of the sale process and saving on listing agent commission.",
+      category: "marketing"
+    },
+    {
+      question: "How important are professional photos for my listing?",
+      answer: "Professional photos are crucial - listings with professional photos receive 118% more online views than those with amateur photos. Good photos are often the difference between getting showings or being ignored online. Invest $200-$500 in professional photography, including exterior shots, all rooms, and key features. Consider virtual tours or video walkthroughs for additional engagement.",
+      category: "marketing"
+    },
+    {
+      question: "What should I include in my listing description?",
+      answer: "Include: Key features and upgrades, Room counts and square footage, Lot size and special features, Recent improvements, Neighborhood highlights, School information, Nearby amenities, and Unique selling points. Be honest and descriptive but avoid subjective terms like 'beautiful' or 'perfect.' Focus on facts and features that buyers search for online.",
+      category: "marketing"
+    },
+
+    // Safety & Security
+    {
+      question: "How do I stay safe when showing my home to strangers?",
+      answer: "Safety tips include: Always ask for buyer pre-qualification before showings, Require photo ID from all visitors, Have someone else present during showings, Meet buyers at the property (don't let them follow you), Keep personal valuables secured, Trust your instincts about visitors, Consider installing temporary security cameras, and Schedule showings during daylight hours when possible. Never show the property alone to unverified buyers.",
+      category: "safety"
+    },
+    {
+      question: "What personal information should I remove before showings?",
+      answer: "Remove or secure: Personal photos, Mail and documents with personal information, Prescription medications, Jewelry and valuables, Computer passwords and financial documents, Children's information and schedules, Spare keys, and Personal calendars. Consider renting a storage unit for valuable items during the selling process. The goal is to depersonalize while maintaining security.",
+      category: "safety"
+    },
+    {
+      question: "How do I verify that potential buyers are legitimate?",
+      answer: "Verify buyers by: Requiring pre-qualification letters from lenders, Asking for photo ID before showings, Getting contact information and verifying it, Having them sign a visitor log, Asking about their timeline and motivation, Checking references if they seem suspicious, and Trusting your instincts. Legitimate buyers understand these precautions and won't be offended by reasonable security measures.",
+      category: "safety"
+    }
+  ];
+
+  const faqCategories = [
+    { id: 'all', name: 'All Questions', icon: <HelpCircle className="w-5 h-5" /> },
+    { id: 'agents', name: 'Working with Agents', icon: <Users className="w-5 h-5" /> },
+    { id: 'legal', name: 'Legal & Documentation', icon: <FileText className="w-5 h-5" /> },
+    { id: 'pricing', name: 'Pricing & Market', icon: <Calculator className="w-5 h-5" /> },
+    { id: 'process', name: 'Process & Timeline', icon: <Clock className="w-5 h-5" /> },
+    { id: 'financial', name: 'Financial & Costs', icon: <DollarSign className="w-5 h-5" /> },
+    { id: 'marketing', name: 'Marketing & Exposure', icon: <Megaphone className="w-5 h-5" /> },
+    { id: 'safety', name: 'Safety & Security', icon: <Shield className="w-5 h-5" /> }
+  ];
+
+  const filteredFAQs = selectedFAQCategory === 'all' 
+    ? faqData 
+    : faqData.filter(faq => faq.category === selectedFAQCategory);
+
+  const toggleFAQ = (index: number) => {
+    setExpandedFAQ(expandedFAQ === index ? null : index);
   };
 
   const steps = [
@@ -580,724 +706,6 @@ Listed at $${listingDetails.price}, this home won't last long in today's market.
     }
   ];
 
-  if (showMarketingHub) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-100">
-        {/* Marketing Hub Header */}
-        <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-purple-500 to-pink-600">
-          <div className="max-w-6xl mx-auto px-4 py-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-lg">
-                  <Target className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-4xl font-bold text-gray-800 mb-2">Marketing Hub</h1>
-                  <p className="text-xl text-gray-600">Professional marketing tools for real estate success</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowMarketingHub(false)}
-                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
-              >
-                ← Back to Application
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            {/* AI Listing Writer */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
-                <div className="flex items-center gap-3">
-                  <Zap className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">AI Listing Writer</h3>
-                </div>
-                <p className="text-blue-100 mt-2">Generate compelling property descriptions with AI</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <input
-                  type="text"
-                  placeholder="Property Address"
-                  value={listingDetails.address}
-                  onChange={(e) => setListingDetails({...listingDetails, address: e.target.value})}
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                />
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="number"
-                    placeholder="Bedrooms"
-                    value={listingDetails.bedrooms}
-                    onChange={(e) => setListingDetails({...listingDetails, bedrooms: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Bathrooms"
-                    value={listingDetails.bathrooms}
-                    onChange={(e) => setListingDetails({...listingDetails, bathrooms: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Square Feet"
-                    value={listingDetails.sqft}
-                    onChange={(e) => setListingDetails({...listingDetails, sqft: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Price"
-                    value={listingDetails.price}
-                    onChange={(e) => setListingDetails({...listingDetails, price: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Key Features"
-                  value={listingDetails.features}
-                  onChange={(e) => setListingDetails({...listingDetails, features: e.target.value})}
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                />
-                <input
-                  type="text"
-                  placeholder="Neighborhood"
-                  value={listingDetails.neighborhood}
-                  onChange={(e) => setListingDetails({...listingDetails, neighborhood: e.target.value})}
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                />
-                <button
-                  onClick={generateListing}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300"
-                >
-                  Generate Listing Description
-                </button>
-                {generatedListing && (
-                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold mb-2">Generated Description:</h4>
-                    <p className="text-sm text-gray-700 whitespace-pre-line">{generatedListing}</p>
-                    <button
-                      onClick={() => navigator.clipboard.writeText(generatedListing)}
-                      className="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
-                    >
-                      Copy to Clipboard
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Photography & Video Guide */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6">
-                <div className="flex items-center gap-3">
-                  <Camera className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">Photography & Video</h3>
-                </div>
-                <p className="text-green-100 mt-2">Professional tips for stunning property photos</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">📸</span>
-                    <div>
-                      <h4 className="font-semibold">Interior Photography</h4>
-                      <p className="text-sm text-gray-600">Wide-angle shots, natural lighting, decluttered spaces</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">🏡</span>
-                    <div>
-                      <h4 className="font-semibold">Exterior Shots</h4>
-                      <p className="text-sm text-gray-600">Golden hour lighting, curb appeal, landscaping</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">🚁</span>
-                    <div>
-                      <h4 className="font-semibold">Drone Photography</h4>
-                      <p className="text-sm text-gray-600">Aerial views, neighborhood context, property boundaries</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">🎥</span>
-                    <div>
-                      <h4 className="font-semibold">Video Tours</h4>
-                      <p className="text-sm text-gray-600">Smooth transitions, highlight key features, 2-3 minutes</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-green-800 mb-2">Pro Tips:</h4>
-                  <ul className="text-sm text-green-700 space-y-1">
-                    <li>• Shoot during golden hour (1 hour before sunset)</li>
-                    <li>• Use a tripod for stability</li>
-                    <li>• Turn on all lights for interior shots</li>
-                    <li>• Remove personal items and clutter</li>
-                    <li>• Take 20-30 photos minimum</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Sample Listing Descriptions */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-orange-500 to-red-600 p-6">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">Sample Descriptions</h3>
-                </div>
-                <p className="text-orange-100 mt-2">Proven listing templates that sell</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Luxury Home Template</h4>
-                    <p className="text-sm text-gray-700">
-                      "Discover unparalleled elegance in this stunning [X]BR/[X]BA masterpiece. Featuring [key features], this exceptional property offers [unique selling points]..."
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Family Home Template</h4>
-                    <p className="text-sm text-gray-700">
-                      "Welcome home to this charming [X]BR/[X]BA family residence. Perfect for [target audience], featuring [family-friendly features]..."
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Investment Property Template</h4>
-                    <p className="text-sm text-gray-700">
-                      "Exceptional investment opportunity! This well-maintained [property type] offers [rental potential] with [investment highlights]..."
-                    </p>
-                  </div>
-                </div>
-                <button className="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-300">
-                  Download All Templates
-                </button>
-              </div>
-            </div>
-
-            {/* Social Media Strategies */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
-                <div className="flex items-center gap-3">
-                  <Share2 className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">Social Media Strategy</h3>
-                </div>
-                <p className="text-pink-100 mt-2">Maximize your property's online exposure</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">📱</span>
-                    <div>
-                      <h4 className="font-semibold">Instagram Strategy</h4>
-                      <p className="text-sm text-gray-600">Stories, Reels, carousel posts with property highlights</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">👥</span>
-                    <div>
-                      <h4 className="font-semibold">Facebook Marketing</h4>
-                      <p className="text-sm text-gray-600">Targeted ads, local groups, virtual open houses</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">💼</span>
-                    <div>
-                      <h4 className="font-semibold">LinkedIn Networking</h4>
-                      <p className="text-sm text-gray-600">Professional network, investor connections</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">🎬</span>
-                    <div>
-                      <h4 className="font-semibold">TikTok & YouTube</h4>
-                      <p className="text-sm text-gray-600">Property tours, neighborhood guides, tips</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-pink-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-pink-800 mb-2">Content Calendar:</h4>
-                  <ul className="text-sm text-pink-700 space-y-1">
-                    <li>• Monday: Property highlights</li>
-                    <li>• Wednesday: Neighborhood features</li>
-                    <li>• Friday: Market updates</li>
-                    <li>• Weekend: Open house promotion</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Printable Flyer Builder */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-indigo-500 to-blue-600 p-6">
-                <div className="flex items-center gap-3">
-                  <Layout className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">Flyer Builder</h3>
-                </div>
-                <p className="text-indigo-100 mt-2">Create professional property flyers instantly</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <input
-                  type="text"
-                  placeholder="Property Address"
-                  value={flyerData.address}
-                  onChange={(e) => setFlyerData({...flyerData, address: e.target.value})}
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                />
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Price"
-                    value={flyerData.price}
-                    onChange={(e) => setFlyerData({...flyerData, price: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Bedrooms"
-                    value={flyerData.bedrooms}
-                    onChange={(e) => setFlyerData({...flyerData, bedrooms: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Bathrooms"
-                    value={flyerData.bathrooms}
-                    onChange={(e) => setFlyerData({...flyerData, bathrooms: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Square Feet"
-                    value={flyerData.sqft}
-                    onChange={(e) => setFlyerData({...flyerData, sqft: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Key Features"
-                  value={flyerData.features}
-                  onChange={(e) => setFlyerData({...flyerData, features: e.target.value})}
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                />
-                <div className="space-y-2">
-                  <h4 className="font-semibold">Agent Information</h4>
-                  <input
-                    type="text"
-                    placeholder="Agent Name"
-                    value={flyerData.agentName}
-                    onChange={(e) => setFlyerData({...flyerData, agentName: e.target.value})}
-                    className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="tel"
-                      placeholder="Phone"
-                      value={flyerData.agentPhone}
-                      onChange={(e) => setFlyerData({...flyerData, agentPhone: e.target.value})}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      value={flyerData.agentEmail}
-                      onChange={(e) => setFlyerData({...flyerData, agentEmail: e.target.value})}
-                      className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <button className="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-indigo-700 hover:to-blue-700 transition-all duration-300 flex items-center justify-center gap-2">
-                    <Eye className="w-4 h-4" />
-                    Preview
-                  </button>
-                  <button className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center gap-2">
-                    <Download className="w-4 h-4" />
-                    Download PDF
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Marketing Templates */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-teal-500 to-cyan-600 p-6">
-                <div className="flex items-center gap-3">
-                  <PenTool className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">Marketing Templates</h3>
-                </div>
-                <p className="text-teal-100 mt-2">Ready-to-use marketing materials</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">📧</span>
-                      <span className="font-medium">Email Templates</span>
-                    </div>
-                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">📱</span>
-                      <span className="font-medium">Social Media Posts</span>
-                    </div>
-                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">📄</span>
-                      <span className="font-medium">Brochure Templates</span>
-                    </div>
-                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">🪧</span>
-                      <span className="font-medium">Yard Sign Designs</span>
-                    </div>
-                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">💌</span>
-                      <span className="font-medium">Direct Mail Postcards</span>
-                    </div>
-                    <button className="text-teal-600 hover:text-teal-800 font-medium">Download</button>
-                  </div>
-                </div>
-                <button className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white py-3 rounded-lg font-semibold hover:from-teal-700 hover:to-cyan-700 transition-all duration-300">
-                  Download All Templates
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (showToolsServices) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
-        {/* Tools & Services Header */}
-        <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
-          <div className="max-w-6xl mx-auto px-4 py-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
-                  <Calculator className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-4xl font-bold text-gray-800 mb-2">Tools & Services</h1>
-                  <p className="text-xl text-gray-600">Professional real estate tools and premium services</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowToolsServices(false)}
-                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300"
-              >
-                ← Back to Application
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="grid lg:grid-cols-2 gap-8">
-            
-            {/* Home Evaluation Estimator */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6">
-                <div className="flex items-center gap-3">
-                  <Calculator className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">Home Evaluation Estimator</h3>
-                </div>
-                <p className="text-green-100 mt-2">Get an instant estimate of your property's value</p>
-              </div>
-              <div className="p-6">
-                <div className="space-y-4">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={propertyAddress}
-                      onChange={(e) => setPropertyAddress(e.target.value)}
-                      placeholder="Enter property address (e.g., 123 Main St, Los Angeles, CA)"
-                      className="w-full p-4 border-2 border-gray-300 rounded-xl text-lg focus:border-green-500 focus:outline-none transition-all duration-300 pl-12"
-                    />
-                    <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
-                  </div>
-                  <button
-                    onClick={calculateHomeValue}
-                    disabled={!propertyAddress}
-                    className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
-                      propertyAddress
-                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700 transform hover:scale-105'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    Get Instant Valuation
-                  </button>
-                  
-                  {estimatedValue && (
-                    <div className="mt-6 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
-                      <div className="text-center">
-                        <h4 className="text-lg font-semibold text-green-800 mb-2">Estimated Property Value</h4>
-                        <div className="text-4xl font-bold text-green-600 mb-2">
-                          ${estimatedValue.toLocaleString()}
-                        </div>
-                        <p className="text-sm text-green-700 mb-4">
-                          Based on recent comparable sales and market data
-                        </p>
-                        <div className="bg-white p-4 rounded-lg">
-                          <p className="text-xs text-gray-600">
-                            <strong>Disclaimer:</strong> This is an automated estimate and should not be considered an appraisal. 
-                            Actual property value may vary. For a professional appraisal, please contact a licensed appraiser.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* FSBO Marketing Kits */}
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-6">
-                <div className="flex items-center gap-3">
-                  <Camera className="w-8 h-8 text-white" />
-                  <h3 className="text-2xl font-bold text-white">FSBO Marketing Kits</h3>
-                </div>
-                <p className="text-purple-100 mt-2">Complete marketing packages for selling your home</p>
-              </div>
-              <div className="p-6 space-y-6">
-                
-                {/* Photography Package */}
-                <div className="border-2 border-purple-200 rounded-xl p-4 hover:border-purple-400 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-3xl">📸</span>
-                    <h4 className="text-xl font-bold text-gray-800">Photography Package</h4>
-                  </div>
-                  <ul className="text-gray-600 space-y-1 mb-4">
-                    <li>• Professional interior/exterior photos (20-30 shots)</li>
-                    <li>• Drone aerial photography</li>
-                    <li>• Virtual staging options</li>
-                    <li>• High-resolution downloads</li>
-                  </ul>
-                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
-                    <Download className="w-4 h-4 inline mr-2" />
-                    Download Templates
-                  </button>
-                </div>
-
-                {/* Signs & Print Materials */}
-                <div className="border-2 border-purple-200 rounded-xl p-4 hover:border-purple-400 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-3xl">🪧</span>
-                    <h4 className="text-xl font-bold text-gray-800">Signs & Print Materials</h4>
-                  </div>
-                  <ul className="text-gray-600 space-y-1 mb-4">
-                    <li>• Custom yard signs design</li>
-                    <li>• Professional brochures template</li>
-                    <li>• Property flyers layout</li>
-                    <li>• Open house signs</li>
-                  </ul>
-                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
-                    <Download className="w-4 h-4 inline mr-2" />
-                    Download Templates
-                  </button>
-                </div>
-
-                {/* Digital Marketing Kit */}
-                <div className="border-2 border-purple-200 rounded-xl p-4 hover:border-purple-400 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-3xl">💻</span>
-                    <h4 className="text-xl font-bold text-gray-800">Digital Marketing Kit</h4>
-                  </div>
-                  <ul className="text-gray-600 space-y-1 mb-4">
-                    <li>• Social media templates</li>
-                    <li>• Online listing descriptions</li>
-                    <li>• Email marketing templates</li>
-                    <li>• Virtual tour setup guide</li>
-                  </ul>
-                  <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300">
-                    <Download className="w-4 h-4 inline mr-2" />
-                    Download Templates
-                  </button>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-          {/* Premium Upgrade Services */}
-          <div className="mt-8 bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="bg-gradient-to-r from-gold-500 to-yellow-600 p-6" style={{background: 'linear-gradient(to right, #f59e0b, #d97706)'}}>
-              <div className="flex items-center gap-3">
-                <Star className="w-8 h-8 text-white" />
-                <h3 className="text-2xl font-bold text-white">Premium Upgrade Services</h3>
-              </div>
-              <p className="text-yellow-100 mt-2">Professional services to maximize your success</p>
-            </div>
-            <div className="p-6">
-              <div className="grid md:grid-cols-3 gap-6">
-                
-                {/* Flat Fee MLS Listing */}
-                <div className="border-2 border-yellow-200 rounded-xl p-6 hover:border-yellow-400 transition-all duration-300 transform hover:scale-105">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Home className="w-8 h-8 text-white" />
-                    </div>
-                    <h4 className="text-xl font-bold text-gray-800 mb-2">Flat Fee MLS Listing</h4>
-                    <div className="text-3xl font-bold text-yellow-600 mb-4">$299</div>
-                    <ul className="text-gray-600 space-y-2 mb-6">
-                      <li>• Full MLS exposure</li>
-                      <li>• Syndication to major sites</li>
-                      <li>• Professional listing photos</li>
-                      <li>• 6-month listing period</li>
-                      <li>• Buyer agent cooperation</li>
-                    </ul>
-                    <button className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-yellow-700 hover:to-orange-700 transition-all duration-300">
-                      Purchase Service
-                    </button>
-                  </div>
-                </div>
-
-                {/* Legal Consultation */}
-                <div className="border-2 border-yellow-200 rounded-xl p-6 hover:border-yellow-400 transition-all duration-300 transform hover:scale-105">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Shield className="w-8 h-8 text-white" />
-                    </div>
-                    <h4 className="text-xl font-bold text-gray-800 mb-2">Legal Consultation</h4>
-                    <div className="text-3xl font-bold text-blue-600 mb-4">$150<span className="text-lg">/hr</span></div>
-                    <ul className="text-gray-600 space-y-2 mb-6">
-                      <li>• Contract review</li>
-                      <li>• Disclosure compliance</li>
-                      <li>• Legal document preparation</li>
-                      <li>• Risk assessment</li>
-                      <li>• Closing guidance</li>
-                    </ul>
-                    <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300">
-                      Schedule Consultation
-                    </button>
-                  </div>
-                </div>
-
-                {/* Transaction Coordinator */}
-                <div className="border-2 border-yellow-200 rounded-xl p-6 hover:border-yellow-400 transition-all duration-300 transform hover:scale-105">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle className="w-8 h-8 text-white" />
-                    </div>
-                    <h4 className="text-xl font-bold text-gray-800 mb-2">Transaction Coordinator</h4>
-                    <div className="text-3xl font-bold text-green-600 mb-4">$495</div>
-                    <ul className="text-gray-600 space-y-2 mb-6">
-                      <li>• Full transaction management</li>
-                      <li>• Timeline coordination</li>
-                      <li>• Document tracking</li>
-                      <li>• Deadline reminders</li>
-                      <li>• Closing coordination</li>
-                    </ul>
-                    <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300">
-                      Hire Coordinator
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          {/* Buyer Home Warranty Incentive */}
-          <div className="mt-8 bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="bg-gradient-to-r from-red-500 to-pink-600 p-6">
-              <div className="flex items-center gap-3">
-                <Shield className="w-8 h-8 text-white" />
-                <h3 className="text-2xl font-bold text-white">Buyer Home Warranty Incentive</h3>
-              </div>
-              <p className="text-red-100 mt-2">Offer buyers peace of mind with comprehensive home protection</p>
-            </div>
-            <div className="p-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                
-                {/* Basic Home Warranty */}
-                <div className="border-2 border-red-200 rounded-xl p-6 hover:border-red-400 transition-all duration-300">
-                  <div className="text-center">
-                    <h4 className="text-xl font-bold text-gray-800 mb-2">Basic Home Warranty</h4>
-                    <div className="text-3xl font-bold text-red-600 mb-4">$450<span className="text-lg">/year</span></div>
-                    <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg mb-4 font-semibold">
-                      FREE as Buyer Incentive!
-                    </div>
-                    <ul className="text-gray-600 space-y-2 mb-6 text-left">
-                      <li>• Kitchen appliances coverage</li>
-                      <li>• HVAC system protection</li>
-                      <li>• Plumbing system coverage</li>
-                      <li>• Electrical system protection</li>
-                      <li>• Water heater coverage</li>
-                      <li>• Garage door opener</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Premium Home Warranty */}
-                <div className="border-2 border-red-200 rounded-xl p-6 hover:border-red-400 transition-all duration-300">
-                  <div className="text-center">
-                    <h4 className="text-xl font-bold text-gray-800 mb-2">Premium Home Warranty</h4>
-                    <div className="text-3xl font-bold text-red-600 mb-4">$650<span className="text-lg">/year</span></div>
-                    <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg mb-4 font-semibold">
-                      FREE as Buyer Incentive!
-                    </div>
-                    <ul className="text-gray-600 space-y-2 mb-6 text-left">
-                      <li>• All Basic coverage items</li>
-                      <li>• Washer & dryer coverage</li>
-                      <li>• Pool/spa equipment</li>
-                      <li>• Roof leak coverage</li>
-                      <li>• Additional refrigerator</li>
-                      <li>• Well pump coverage</li>
-                      <li>• Septic system coverage</li>
-                    </ul>
-                  </div>
-                </div>
-
-              </div>
-              
-              <div className="mt-6 bg-red-50 p-6 rounded-xl">
-                <h4 className="text-lg font-bold text-red-800 mb-3">Why Offer Home Warranty as an Incentive?</h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <ul className="text-red-700 space-y-2">
-                    <li>• Reduces buyer anxiety about potential repairs</li>
-                    <li>• Makes your listing more attractive</li>
-                    <li>• Can help close deals faster</li>
-                  </ul>
-                  <ul className="text-red-700 space-y-2">
-                    <li>• Differentiates from other listings</li>
-                    <li>• Shows seller confidence in property</li>
-                    <li>• Minimal cost for maximum impact</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    );
-  }
-
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-100 via-blue-50 to-purple-100 flex items-center justify-center p-4">
@@ -1341,8 +749,182 @@ Listed at $${listingDetails.price}, this home won't last long in today's market.
     );
   }
 
+  // Navigation Menu
+  const navigationMenu = (
+    <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
+      <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+          {[
+            { id: 'questionnaire', name: 'Home Financing', icon: <Home className="w-5 h-5" />, color: 'from-blue-500 to-purple-600' },
+            { id: 'legal', name: 'Legal Forms', icon: <Scale className="w-5 h-5" />, color: 'from-green-500 to-teal-600' },
+            { id: 'tools', name: 'Tools & Services', icon: <Wrench className="w-5 h-5" />, color: 'from-orange-500 to-red-600' },
+            { id: 'marketing', name: 'Marketing Hub', icon: <Megaphone className="w-5 h-5" />, color: 'from-purple-500 to-pink-600' },
+            { id: 'faqs', name: 'FAQs', icon: <HelpCircle className="w-5 h-5" />, color: 'from-indigo-500 to-blue-600' }
+          ].map((section) => (
+            <button
+              key={section.id}
+              onClick={() => setShowSection(section.id)}
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                showSection === section.id
+                  ? `bg-gradient-to-r ${section.color} text-white shadow-lg`
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {section.icon}
+              <span className="hidden sm:inline">{section.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // FAQ Section
+  if (showSection === 'faqs') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+        {navigationMenu}
+        
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* FAQ Header */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full mb-6">
+              <HelpCircle className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">Frequently Asked Questions</h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get answers to common concerns about selling your home, working with agents, legal requirements, and more.
+            </p>
+          </div>
+
+          {/* Category Filter */}
+          <div className="mb-8">
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+              {faqCategories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedFAQCategory(category.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    selectedFAQCategory === category.id
+                      ? 'bg-gradient-to-r from-indigo-500 to-blue-600 text-white shadow-lg'
+                      : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                  }`}
+                >
+                  {category.icon}
+                  <span className="hidden sm:inline">{category.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* FAQ Items */}
+          <div className="space-y-4">
+            {filteredFAQs.map((faq, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <button
+                  onClick={() => toggleFAQ(index)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800 pr-4">{faq.question}</h3>
+                  {expandedFAQ === index ? (
+                    <ChevronUp className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  )}
+                </button>
+                {expandedFAQ === index && (
+                  <div className="px-6 pb-4">
+                    <div className="border-t border-gray-100 pt-4">
+                      <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Contact Section */}
+          <div className="mt-12 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-2xl p-8 text-white text-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Phone className="w-6 h-6" />
+              <h3 className="text-2xl font-bold">Still Have Questions?</h3>
+            </div>
+            <p className="text-blue-100 mb-6 text-lg">
+              Can't find the answer you're looking for? We're here to help with personalized guidance.
+            </p>
+            <a 
+              href="mailto:bruce.nangle@grarate.com" 
+              className="inline-flex items-center gap-2 bg-white text-indigo-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              <span className="text-2xl">📧</span>
+              Contact Bruce Nangle
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Other sections (Legal, Tools, Marketing) would go here
+  if (showSection === 'legal') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+        {navigationMenu}
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-teal-600 rounded-full mb-6">
+              <Scale className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">Legal Forms & Resources</h1>
+            <p className="text-xl text-gray-600">Free/paid downloadable forms by state, contract templates, and legal guidance</p>
+          </div>
+          {/* Legal content would go here */}
+        </div>
+      </div>
+    );
+  }
+
+  if (showSection === 'tools') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+        {navigationMenu}
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-6">
+              <Wrench className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">Tools & Services</h1>
+            <p className="text-xl text-gray-600">Home evaluation, FSBO marketing kits, and professional services</p>
+          </div>
+          {/* Tools content would go here */}
+        </div>
+      </div>
+    );
+  }
+
+  if (showSection === 'marketing') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+        {navigationMenu}
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full mb-6">
+              <Megaphone className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-4">Marketing Hub</h1>
+            <p className="text-xl text-gray-600">Listing tools, photography tips, and marketing strategies</p>
+          </div>
+          {/* Marketing content would go here */}
+        </div>
+      </div>
+    );
+  }
+
+  // Default: Home Financing Questionnaire
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+      {navigationMenu}
+      
       {/* Header with Beautiful Family in Front of Home Banner */}
       <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -1414,24 +996,6 @@ Listed at $${listingDetails.price}, this home won't last long in today's market.
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Tools & Services and Marketing Hub Buttons */}
-          <div className="flex gap-4 mt-6">
-            <button
-              onClick={() => setShowToolsServices(true)}
-              className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              <Calculator className="w-5 h-5" />
-              Tools & Services
-            </button>
-            <button
-              onClick={() => setShowMarketingHub(true)}
-              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              <Target className="w-5 h-5" />
-              Marketing Hub
-            </button>
           </div>
         </div>
       </div>
