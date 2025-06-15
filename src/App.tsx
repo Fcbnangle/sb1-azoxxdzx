@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star } from 'lucide-react';
+import { Home, ArrowRight, ArrowLeft, Send, CheckCircle, DollarSign, MapPin, User, Calendar, Building, Shield, CreditCard, Briefcase, TrendingUp, Star, FileText, Download, AlertTriangle, CheckSquare, ExternalLink } from 'lucide-react';
 
 interface FormData {
   financingType: string;
@@ -35,6 +35,7 @@ function App() {
     phone: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showLegalForms, setShowLegalForms] = useState(false);
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -519,6 +520,294 @@ function App() {
     }
   ];
 
+  const stateResources = [
+    { state: 'California', url: 'https://www.dre.ca.gov/', forms: ['Purchase Agreement', 'Disclosure Forms', 'Transfer Disclosure Statement'] },
+    { state: 'New York', url: 'https://www.dos.ny.gov/licensing/re_salesperson/', forms: ['Property Condition Disclosure', 'Lead Paint Disclosure', 'Attorney Approval Addendum'] },
+    { state: 'Texas', url: 'https://www.trec.texas.gov/', forms: ['Earnest Money Contract', 'Seller\'s Disclosure Notice', 'Property Condition Addendum'] },
+    { state: 'Florida', url: 'https://www.myfloridalicense.com/DBPR/', forms: ['As-Is Contract', 'Property Disclosure', 'Homeowners Association Addendum'] },
+    { state: 'Illinois', url: 'https://www.idfpr.com/', forms: ['Residential Real Property Disclosure', 'Lead-Based Paint Disclosure', 'Radon Disclosure'] },
+    { state: 'Pennsylvania', url: 'https://www.dos.pa.gov/ProfessionalLicensing/', forms: ['Seller Property Disclosure Statement', 'Consumer Notice', 'Residential Purchase Agreement'] },
+    { state: 'Ohio', url: 'https://com.ohio.gov/real/', forms: ['Residential Property Disclosure Form', 'Lead-Based Paint Disclosure', 'Purchase Contract'] },
+    { state: 'Georgia', url: 'https://grec.state.ga.us/', forms: ['Seller\'s Property Disclosure Statement', 'Purchase and Sale Agreement', 'Brokerage Engagement Agreement'] },
+    { state: 'North Carolina', url: 'https://www.ncrec.gov/', forms: ['Residential Property Disclosure Statement', 'Offer to Purchase', 'Due Diligence Agreement'] },
+    { state: 'Michigan', url: 'https://www.michigan.gov/lara/', forms: ['Seller Disclosure Statement', 'Purchase Agreement', 'Lead Disclosure'] }
+  ];
+
+  const contractTemplates = [
+    { name: 'Purchase Agreement Template', type: 'Contract', description: 'Standard residential purchase agreement with all essential terms' },
+    { name: 'Listing Agreement Template', type: 'Contract', description: 'Agreement between seller and real estate agent' },
+    { name: 'Lease Purchase Agreement', type: 'Contract', description: 'Rent-to-own agreement template' },
+    { name: 'Property Management Agreement', type: 'Contract', description: 'Agreement for property management services' },
+    { name: 'Disclosure Statement Template', type: 'Disclosure', description: 'Property condition and defect disclosure form' },
+    { name: 'Lead Paint Disclosure', type: 'Disclosure', description: 'Required federal lead-based paint disclosure' },
+    { name: 'HOA Disclosure', type: 'Disclosure', description: 'Homeowners association information disclosure' },
+    { name: 'Natural Hazard Disclosure', type: 'Disclosure', description: 'Environmental and natural disaster risk disclosure' }
+  ];
+
+  const closingChecklist = [
+    { category: 'Pre-Closing (30 days)', items: [
+      'Order home inspection',
+      'Secure financing pre-approval',
+      'Order appraisal',
+      'Review title report',
+      'Obtain homeowners insurance',
+      'Schedule final walkthrough'
+    ]},
+    { category: 'Pre-Closing (7 days)', items: [
+      'Review closing disclosure',
+      'Confirm wire transfer details',
+      'Prepare certified funds',
+      'Review all contract addendums',
+      'Confirm utility transfers',
+      'Schedule moving services'
+    ]},
+    { category: 'Closing Day', items: [
+      'Bring government-issued ID',
+      'Bring certified funds for closing costs',
+      'Review all documents before signing',
+      'Confirm property condition',
+      'Receive keys and garage remotes',
+      'Get copies of all signed documents'
+    ]},
+    { category: 'Post-Closing', items: [
+      'Record deed with county',
+      'Set up utilities in your name',
+      'Update address with all institutions',
+      'File homestead exemption if applicable',
+      'Keep all closing documents safe',
+      'Schedule home warranty activation'
+    ]}
+  ];
+
+  const commonPitfalls = [
+    {
+      category: 'Documentation Errors',
+      pitfall: 'Incomplete or missing disclosures',
+      consequence: 'Legal liability, deal cancellation, lawsuits',
+      prevention: 'Use state-specific disclosure checklists, review all forms with attorney'
+    },
+    {
+      category: 'Financial Issues',
+      pitfall: 'Not getting pre-approved for financing',
+      consequence: 'Deal falls through, wasted time and money',
+      prevention: 'Secure pre-approval letter before making offers'
+    },
+    {
+      category: 'Inspection Problems',
+      pitfall: 'Skipping professional home inspection',
+      consequence: 'Hidden defects, expensive repairs after closing',
+      prevention: 'Always hire qualified inspector, review report thoroughly'
+    },
+    {
+      category: 'Title Issues',
+      pitfall: 'Not reviewing title report carefully',
+      consequence: 'Ownership disputes, liens, legal complications',
+      prevention: 'Review title commitment, purchase title insurance'
+    },
+    {
+      category: 'Contract Terms',
+      pitfall: 'Unclear or missing contingencies',
+      consequence: 'Forced to complete unfavorable transaction',
+      prevention: 'Include inspection, financing, and appraisal contingencies'
+    },
+    {
+      category: 'Closing Preparation',
+      pitfall: 'Not reviewing closing disclosure in advance',
+      consequence: 'Surprises at closing, delayed settlement',
+      prevention: 'Review closing disclosure 3 days before closing'
+    }
+  ];
+
+  if (showLegalForms) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+        {/* Header */}
+        <div className="bg-white shadow-lg border-b-4 border-gradient-to-r from-blue-500 to-purple-600">
+          <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
+                  <FileText className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold text-navy-900 mb-2" style={{ color: '#1e3a8a' }}>
+                    LEGAL FORMS & RESOURCES
+                  </h1>
+                  <p className="text-xl text-gray-600">Essential documents and state-specific resources for real estate transactions</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowLegalForms(false)}
+                className="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all duration-300 transform hover:scale-105"
+              >
+                Back to Application
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+          {/* State Resources Section */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
+              <div className="flex items-center gap-3">
+                <ExternalLink className="w-8 h-8" />
+                <h2 className="text-2xl font-bold">State-Specific Resources</h2>
+              </div>
+              <p className="mt-2 text-blue-100">Official state resources and required forms by state</p>
+            </div>
+            <div className="p-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {stateResources.map((state, index) => (
+                  <div key={index} className="border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-lg font-bold text-gray-800">{state.state}</h3>
+                      <a
+                        href={state.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 transition-colors"
+                      >
+                        <ExternalLink className="w-5 h-5" />
+                      </a>
+                    </div>
+                    <div className="space-y-2">
+                      {state.forms.map((form, formIndex) => (
+                        <div key={formIndex} className="flex items-center gap-2 text-sm text-gray-600">
+                          <Download className="w-4 h-4 text-green-600" />
+                          {form}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Contract Templates Section */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
+              <div className="flex items-center gap-3">
+                <FileText className="w-8 h-8" />
+                <h2 className="text-2xl font-bold">Contract Templates & Disclosure Forms</h2>
+              </div>
+              <p className="mt-2 text-green-100">Professional templates for real estate transactions</p>
+            </div>
+            <div className="p-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                {contractTemplates.map((template, index) => (
+                  <div key={index} className="border-2 border-gray-200 rounded-xl p-4 hover:border-green-300 hover:bg-green-50 transition-all duration-300">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            template.type === 'Contract' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'
+                          }`}>
+                            {template.type}
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-800 mb-2">{template.name}</h3>
+                        <p className="text-sm text-gray-600">{template.description}</p>
+                      </div>
+                      <button className="ml-4 p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
+                        <Download className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Closing Checklist Section */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
+              <div className="flex items-center gap-3">
+                <CheckSquare className="w-8 h-8" />
+                <h2 className="text-2xl font-bold">Closing Checklist</h2>
+              </div>
+              <p className="mt-2 text-purple-100">Step-by-step checklist to ensure smooth closing</p>
+            </div>
+            <div className="p-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {closingChecklist.map((phase, index) => (
+                  <div key={index} className="border-2 border-gray-200 rounded-xl p-4">
+                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                      <span className="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">
+                        {index + 1}
+                      </span>
+                      {phase.category}
+                    </h3>
+                    <div className="space-y-2">
+                      {phase.items.map((item, itemIndex) => (
+                        <div key={itemIndex} className="flex items-center gap-2 text-sm text-gray-600">
+                          <CheckSquare className="w-4 h-4 text-green-600" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Common Pitfalls Section */}
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white p-6">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="w-8 h-8" />
+                <h2 className="text-2xl font-bold">Common Pitfalls & How to Avoid Them</h2>
+              </div>
+              <p className="mt-2 text-red-100">Critical mistakes that can derail your real estate transaction</p>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                {commonPitfalls.map((pitfall, index) => (
+                  <div key={index} className="border-2 border-gray-200 rounded-xl p-6 hover:border-red-300 hover:bg-red-50 transition-all duration-300">
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">
+                            {pitfall.category}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-gray-800">{pitfall.pitfall}</h3>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-red-600 mb-1">Consequences:</h4>
+                        <p className="text-sm text-gray-600">{pitfall.consequence}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-green-600 mb-1">Prevention:</h4>
+                        <p className="text-sm text-gray-600">{pitfall.prevention}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer Section */}
+          <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-3xl p-8">
+            <div className="text-center">
+              <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold mb-4">Important Legal Disclaimer</h3>
+              <p className="text-gray-300 leading-relaxed max-w-4xl mx-auto">
+                The forms and information provided here are for educational purposes only and should not be considered legal advice. 
+                Real estate laws vary significantly by state and locality. Always consult with a qualified real estate attorney, 
+                licensed real estate professional, or your state's real estate commission before using any forms or making legal decisions. 
+                Bruce Nangle and Guaranteed Rate Affinity are not responsible for any legal consequences resulting from the use of these resources.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-100 via-blue-50 to-purple-100 flex items-center justify-center p-4">
@@ -581,18 +870,29 @@ function App() {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 via-transparent to-purple-900/40"></div>
             
-            <div className="relative flex items-center gap-4 p-8">
-              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
-                <Home className="w-8 h-8 text-white" />
+            <div className="relative flex items-center justify-between p-8">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-lg">
+                  <Home className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-4xl font-bold text-navy-900 mb-2 drop-shadow-lg" style={{ color: '#1e3a8a' }}>
+                    FIND YOUR PERFECT HOME FINANCING SOLUTION
+                  </h2>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Home Financing Questionnaire
+                  </h1>
+                </div>
               </div>
-              <div>
-                <h2 className="text-4xl font-bold text-navy-900 mb-2 drop-shadow-lg" style={{ color: '#1e3a8a' }}>
-                  FIND YOUR PERFECT HOME FINANCING SOLUTION
-                </h2>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Home Financing Questionnaire
-                </h1>
-              </div>
+              
+              {/* Legal Forms Button */}
+              <button
+                onClick={() => setShowLegalForms(true)}
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+              >
+                <FileText className="w-5 h-5" />
+                Legal Forms
+              </button>
             </div>
           </div>
           
